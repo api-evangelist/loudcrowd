@@ -1,0 +1,108 @@
+generated: '2026-08-25'
+method: derived
+source: >-
+  openapi/loudcrowd-openapi.yml, openapi/loudcrowd-creator-storefronts-openapi.yml,
+  mcp/loudcrowd-mcp.yml (candidate), live probe of https://api.loudcrowd.com/graphql
+note: >-
+  Emitted because LoudCrowd operates a GraphQL surface alongside a published OpenAPI, so the
+  divergence between them is worth recording even though no MCP server exists. Every crosswalk row
+  below binds a CANDIDATE tool (derived by this pipeline, not published by LoudCrowd) to the real
+  OpenAPI operation it would wrap, so each tool's true input contract is that operation's
+  parameters/requestBody in the spec. No GraphQL field can be crosswalked: introspection is
+  disabled server-side.
+surfaces:
+  openapi:
+  - file: openapi/loudcrowd-openapi.yml
+    title: LoudCrowd API (Brand API + Attribution Events API + Storefronts)
+    operations: 8
+    gated: false
+  - file: openapi/loudcrowd-creator-storefronts-openapi.yml
+    title: LoudCrowd Creator Storefronts API
+    operations: 5
+    gated: false
+  graphql:
+    endpoint: https://api.loudcrowd.com/graphql
+    discovered: probe
+    evidence: >-
+      GET returned HTTP 400 {"errors":[{"message":"Must provide query string."}]}; POST of
+      {__schema{queryType{name}}} returned HTTP 400
+      {"errors":[{"message":"Introspection is not supported."}]}.
+    gated: true
+    gate: introspection-disabled
+    documented: false
+    note: >-
+      The endpoint is real and provider-served, but LoudCrowd does not document a public GraphQL API
+      anywhere in docs.loudcrowd.com. It is most likely the backing surface for app.loudcrowd.com.
+      NO SCHEMA WAS CAPTURED and none is inferred; no GraphQL pointer is wired into apis.yml because
+      LoudCrowd does not advertise this as a public developer surface.
+  mcp:
+    url: null
+    gated: null
+    note: No MCP server published — see mcp/loudcrowd-mcp.yml.
+crosswalk:
+- tool: list_program_orders
+  category: reporting
+  rest:
+  - list_program_orders
+  binding: rest
+  confidence: high
+  note: 1:1 derivation. GET /api/v1/brand/{account_id}/programs/{program_id}/orders.
+- tool: submit_order_event
+  category: attribution-write
+  rest:
+  - submit_order_event
+  binding: rest
+  confidence: high
+  note: >-
+    1:1 on the operation, but the operation itself fans out by header — X-LC-TOPIC selects
+    ORDER_CREATE, ORDER_UPDATE or ORDER_CANCEL against the one POST /event/ecomm path, and refunds
+    ride on ORDER_UPDATE. A faithful tool would need topic as a required enum input.
+- tool: send_product_data
+  category: catalog-write
+  rest:
+  - send_product_data
+  binding: rest
+  confidence: high
+  note: POST /product-data. Batch of 1-1000 productIngestRecord items.
+- tool: get_storefront_ambassador
+  category: storefront-read
+  rest:
+  - GET /StorefrontAmbassador
+  binding: rest
+  confidence: high
+  note: Operation has no operationId in the spec; bound by method+path.
+- tool: get_storefront_collections
+  category: storefront-read
+  rest:
+  - GET /StorefrontCollections
+  binding: rest
+  confidence: high
+- tool: get_storefront_feed_items
+  category: storefront-read
+  rest:
+  - GET /StorefrontFeedItems
+  binding: rest
+  confidence: high
+  note: 15 query parameters including mediaCursor/productCursor dual-cursor pagination.
+- tool: get_storefront_media_details
+  category: storefront-read
+  rest:
+  - GET /StorefrontMediaDetails
+  binding: rest
+  confidence: high
+- tool: get_storefront_product_details
+  category: storefront-read
+  rest:
+  - GET /StorefrontProductDetails
+  binding: rest
+  confidence: high
+mcp_only: []
+rest_only: []
+coverage:
+  tools_named: 8
+  tools_bound: 8
+  mcp_only: 0
+  rest_ops_total: 8
+  rest_ops_with_tool: 8
+  graphql_fields_mapped: 0
+  graphql_fields_total: unknown

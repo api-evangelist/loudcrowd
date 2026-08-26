@@ -1,0 +1,102 @@
+generated: '2026-08-25'
+method: searched
+source: >-
+  https://docs.loudcrowd.com/docs/install-the-loudcrowd-sdk-on-your-ecommerce-site,
+  https://docs.loudcrowd.com/docs/installing-storefront-in-shopify,
+  https://docs.loudcrowd.com/docs/installing-influencer-list-page-in-shopify,
+  https://docs.loudcrowd.com/docs/styling-storefront-app-blocks,
+  https://docs.loudcrowd.com/docs/styling-influencer-list-app-blocks,
+  https://docs.loudcrowd.com/docs/enable-loudcrowds-widget-on-your-product-detail-page
+note: >-
+  Embeddable UI is LoudCrowd's PRIMARY integration surface — larger and better documented than the
+  REST APIs. The Creator Storefronts API exists specifically as the alternative for teams who do not
+  want these components ("This api is to be used in place of the creator storefront web-components.
+  The user of this api is responsible for rendering the data").
+loader:
+  name: LoudCrowd JS SDK
+  url: https://pub.loudcrowd.com/embed.js
+  type: ES module script tag
+  install: '<script type="module" src="https://pub.loudcrowd.com/embed.js"></script>'
+  init: window.loudcrowd.init("SHOP_ID")
+  ready_event: loudcrowd-global-loaded
+  placement: <head> of the base page template
+  versioned: false
+  note: >-
+    Unpinned — no version segment, no SRI hash. See packages/loudcrowd-packages.yml. LoudCrowd
+    explicitly recommends AGAINST loading it through a tag manager (GTM, Adobe Launch), because
+    iOS 17+ privacy defaults block those and the storefronts then fail to render for a significant
+    share of buyers.
+  api:
+  - method: window.loudcrowd.init(shopId, options)
+    options:
+    - locale
+  - method: window.loudcrowd.changeLocale(locale)
+    note: 'Accepts a BCP-47 string, an Intl.Locale, or {language, region}.'
+  - method: window.loudcrowd.identifyDevice()
+    note: >-
+      Returns the tracking ID (lc_anon_id) for sites that have not installed the order-confirmation
+      script — the bridge between the browser SDK and the server-side Attribution Events API.
+families:
+- family: Creator Storefronts
+  description: Branded, on-domain creator shops rendered from LoudCrowd + commerce data.
+  surfaces:
+  - platform: Shopify
+    delivery: app block (theme app extension)
+    docs: https://docs.loudcrowd.com/docs/installing-storefront-in-shopify
+    styling: https://docs.loudcrowd.com/docs/styling-storefront-app-blocks
+  - platform: Salesforce Commerce Cloud
+    delivery: web component
+    docs: https://docs.loudcrowd.com/docs/install-the-loudcrowd-storefront-page-in-your-salesforce-website
+  - platform: custom / headless
+    delivery: web component
+    docs: https://docs.loudcrowd.com/docs/install-the-loudcrowd-storefront-page-in-your-custom-website
+  api_alternative: openapi/loudcrowd-creator-storefronts-openapi.yml
+- family: Influencer List page
+  description: Profile index linking through to each creator's storefront.
+  surfaces:
+  - platform: Shopify
+    delivery: app block
+    docs: https://docs.loudcrowd.com/docs/installing-influencer-list-page-in-shopify
+    styling: https://docs.loudcrowd.com/docs/styling-influencer-list-app-blocks
+  - platform: Salesforce Commerce Cloud
+    delivery: web component
+    docs: https://docs.loudcrowd.com/docs/install-the-loudcrowd-influencer-list-page-in-your-salesforce-website
+  - platform: custom / headless
+    delivery: web component
+    docs: https://docs.loudcrowd.com/docs/install-the-loudcrowd-influencer-list-page-in-your-custom-website
+- family: Creator Widget
+  description: >-
+    Toolbar exposed on product detail pages to logged-in program members, letting a creator pick
+    products into their storefront from the live PDP.
+  surfaces:
+  - platform: any
+    delivery: SDK-rendered overlay
+    docs: https://docs.loudcrowd.com/docs/enable-loudcrowds-widget-on-your-product-detail-page
+  audience: program members only
+- family: Order attribution snippet
+  description: >-
+    Server- or client-side snippet on the order-confirmed page that ties a completed purchase to the
+    creator link that drove it.
+  surfaces:
+  - platform: custom / headless
+    docs: https://docs.loudcrowd.com/docs/install-attribution-snippet-into-order-confirmed-page
+  - platform: custom / headless
+    docs: https://docs.loudcrowd.com/docs/implementation-guide-installing-order-attribution-for-custom-ecomm-pages
+- family: ShopWith
+  description: AI shopping concierge embedded on the PDP, answering in the creators' voice.
+  surfaces:
+  - platform: any
+    delivery: one snippet on the PDP (self-serve install)
+    docs: https://loudcrowd.com/products/shopwith/
+  note: >-
+    Named on the pricing page as a self-serve snippet install; no developer documentation for it is
+    published on docs.loudcrowd.com yet.
+content_security_policy:
+  required: true
+  note: The page CSP must be widened for the components to load. LoudCrowd publishes these directives verbatim.
+  directives:
+  - 'script-src *.loudcrowd.com'
+  - 'style-src *.loudcrowd.com'
+  - 'media-src *.loudcrowd.com lookaside.fbsbx.com'
+  - 'img-src *.loudcrowd.com lookaside.fbsbx.com'
+  - 'connect-src *.loudcrowd.com'

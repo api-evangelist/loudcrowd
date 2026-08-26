@@ -1,23 +1,174 @@
 aid: loudcrowd
 name: LoudCrowd
-description: 'LoudCrowd is a company surfaced via the API Evangelist harvest backlog (source: secondary-market)
-  and added to the network as a stub for full-pipeline profiling.'
+description: >-
+  LoudCrowd is a creator-commerce platform for consumer brands, combining an influencer/ambassador
+  and affiliate marketing platform, on-domain Creator Storefronts, a ShopWith AI shopping concierge
+  for product detail pages, AI Influencer Agents for discovery, outreach and moderation, and Creator
+  GEO for turning earned creator content into AI-recommendable assets. For developers it publishes a
+  small, purpose-built OpenAPI 3.0 surface across three services: a read-only account-scoped Brand API
+  for pulling program-attributed orders, an HMAC-SHA256-signed Attribution Events API for pushing order
+  create/update/cancel and refund events plus product-catalog batches from custom and headless commerce
+  stacks, and a Creator Storefronts data API used in place of the hosted storefront web components.
+  A browser SDK loaded from pub.loudcrowd.com renders storefront and influencer-list app blocks and
+  performs first-party affiliate attribution on Shopify, Salesforce Commerce Cloud and custom sites.
+image: https://loudcrowd.com/og-default.png
 url: https://raw.githubusercontent.com/api-evangelist/loudcrowd/refs/heads/main/apis.yml
 x-type: company
 x-source: harvest:secondary-market
-x-tier: stub
-x-tier-reason: harvest
-specificationVersion: '0.20'
+specificationVersion: '0.23'
 created: '2026-08-25'
 modified: '2026-08-25'
 tags:
-- Company
-apis: []
+- Creator Marketing
+- Influencer Marketing
+- Affiliate Marketing
+- Ecommerce
+- Creator Commerce
+- Attribution
+- Social Commerce
+- Shopify
+- User Generated Content
+- Commissions
+- Retail
+- Marketing
 maintainers:
 - FN: Kin Lane
   email: kin@apievangelist.com
 - FN: APIs.json
   email: info@apis.io
+apis:
+- name: LoudCrowd Brand API
+  description: >-
+    Read-only, account-scoped REST API for pulling orders attributed to members of a LoudCrowd program.
+    Each result identifies the program member and includes attribution methods, financial values and
+    platform timestamps, cursor-paginated with the most recently received orders first. Authenticated
+    with an account API token sent in the X-LC-Account-Key header and requires the Read orders and
+    Read programs scopes.
+  humanURL: https://docs.loudcrowd.com/reference/list_program_orders
+  baseURL: https://api.loudcrowd.com
+  tags:
+  - Creator Marketing
+  - Affiliate Marketing
+  - Attribution
+  - Ecommerce
+  properties:
+  - type: OpenAPI
+    url: openapi/loudcrowd-openapi.yml
+  - type: Documentation
+    url: https://docs.loudcrowd.com/reference/list_program_orders
+- name: LoudCrowd Attribution Events API
+  description: >-
+    Single-endpoint event intake for custom and headless commerce stacks. POST /event/ecomm accepts the
+    complete order payload for ORDER_CREATE, ORDER_UPDATE and ORDER_CANCEL topics selected by the
+    X-LC-TOPIC header, including refund line items for return-driven commission adjustment, and
+    POST /product-data batch-upserts or deletes product catalog records. Requests are authenticated
+    with a lowercase hex HMAC-SHA256 signature of the exact raw request body in X-Signature, keyed on
+    an API token carrying the Write orders scope, alongside the integration's X-LC-SHOP-ID.
+  humanURL: https://docs.loudcrowd.com/reference/submit_order_event
+  baseURL: https://api.loudcrowd.com
+  tags:
+  - Attribution
+  - Ecommerce
+  - Commissions
+  - Webhooks
+  properties:
+  - type: OpenAPI
+    url: openapi/loudcrowd-openapi.yml
+  - type: Documentation
+    url: https://docs.loudcrowd.com/reference/submit_order_event
+- name: LoudCrowd Creator Storefronts API
+  description: >-
+    Data API to be used in place of the hosted creator storefront web components, leaving the caller
+    responsible for rendering. Five read operations return ambassador information, an ambassador's
+    collections, paginated collection feed items mixing shoppable media and picked products, media
+    detail for a shoppable post, and product-variant detail for an ambassador's picked product.
+    Bearer-token authenticated.
+  humanURL: https://docs.loudcrowd.com/docs/install-the-loudcrowd-storefront-page-in-your-custom-website
+  baseURL: https://store-api.loudcrowd.com/api
+  tags:
+  - Creator Commerce
+  - Social Commerce
+  - Ecommerce
+  properties:
+  - type: OpenAPI
+    url: openapi/loudcrowd-creator-storefronts-openapi.yml
+  - type: Documentation
+    url: https://docs.loudcrowd.com/docs/install-the-loudcrowd-storefront-page-in-your-custom-website
 common:
+- type: DomainSecurity
+  url: security/loudcrowd-domain-security.yml
+- type: Authentication
+  url: authentication/loudcrowd-authentication.yml
 - type: Website
-  url: https://www.nasdaqprivatemarket.com/
+  url: https://loudcrowd.com/
+- type: DeveloperPortal
+  url: https://docs.loudcrowd.com/
+- type: Documentation
+  url: https://docs.loudcrowd.com/docs
+- type: APIReference
+  url: https://docs.loudcrowd.com/reference
+- type: GettingStarted
+  url: https://docs.loudcrowd.com/docs/implementation-overview-custom-ecommerce
+- type: Support
+  url: https://help.loudcrowd.com/en/
+- type: HelpCenter
+  url: https://help.loudcrowd.com/en/
+- type: Blog
+  url: https://loudcrowd.com/blog/
+- type: BlogRSS
+  url: https://loudcrowd.com/feed.xml
+- type: Pricing
+  url: https://loudcrowd.com/pricing/
+- type: SignUp
+  url: https://loudcrowd.com/demo/
+- type: Login
+  url: https://app.loudcrowd.com/
+- type: TermsOfService
+  url: https://loudcrowd.com/legal/platform-terms/
+- type: PrivacyPolicy
+  url: https://loudcrowd.com/legal/privacy/
+- type: Compliance
+  url: https://loudcrowd.com/legal/dpa/
+- type: Packages
+  url: packages/loudcrowd-packages.yml
+- type: SDKs
+  url: packages/loudcrowd-packages.yml
+- type: LLMsTxt
+  url: llms/loudcrowd-llms.txt
+- type: Conventions
+  url: conventions/loudcrowd-conventions.yml
+- type: Idempotency
+  url: conventions/loudcrowd-conventions.yml
+- type: ErrorCatalog
+  url: errors/loudcrowd-problem-types.yml
+- type: Lifecycle
+  url: lifecycle/loudcrowd-lifecycle.yml
+- type: Conformance
+  url: conformance/loudcrowd-conformance.yml
+- type: DataModel
+  url: data-model/loudcrowd-data-model.yml
+- type: Components
+  url: components/loudcrowd-components.yml
+- type: ToolCrosswalk
+  url: mcp/loudcrowd-tool-crosswalk.yml
+- type: EventCatalog
+  url: asyncapi/loudcrowd-attribution-events.yml
+- type: AgentSkill
+  url: skills/_index.yml
+- type: Plans
+  url: plans/loudcrowd-plans-pricing.yml
+- type: RateLimits
+  url: rate-limits/loudcrowd-rate-limits.yml
+- type: Overlay
+  url: overlays/loudcrowd-api-overlay.yaml
+- type: Overlay
+  url: overlays/loudcrowd-creator-storefronts-overlay.yaml
+- type: WellKnown-Probe
+  url: well-known/loudcrowd-well-known.yml
+- type: MCPServer-Candidate
+  url: mcp/loudcrowd-mcp.yml
+x-enrichment:
+  date: '2026-08-25'
+  status: enriched
+  artifacts_added: 28
+  pass: local-v1

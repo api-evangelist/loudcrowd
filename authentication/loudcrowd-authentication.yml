@@ -1,0 +1,25 @@
+generated: '2026-08-25'
+method: derived
+source: openapi/loudcrowd-creator-storefronts-openapi.yml, openapi/loudcrowd-openapi.yml
+summary:
+  types:
+  - apiKey
+  - http
+  api_key_in:
+  - header
+schemes:
+- name: bearerAuth
+  type: http
+  scheme: bearer
+  description: 'Authorization header using the Bearer scheme. Example: "Authorization: Bearer
+    {token}"'
+  sources:
+  - openapi/loudcrowd-creator-storefronts-openapi.yml
+  - openapi/loudcrowd-openapi.yml
+- name: accountKeyAuth
+  type: apiKey
+  in: header
+  parameter: X-LC-Account-Key
+  description: API token created in LoudCrowd.
+  sources:
+  - openapi/loudcrowd-openapi.yml

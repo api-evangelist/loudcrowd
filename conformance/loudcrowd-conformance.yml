@@ -1,0 +1,122 @@
+generated: '2026-08-25'
+method: searched
+source: >-
+  openapi/loudcrowd-openapi.yml, openapi/loudcrowd-creator-storefronts-openapi.yml,
+  https://docs.loudcrowd.com/reference/authentication-1,
+  https://docs.loudcrowd.com/reference/rate-limits-and-handling-errors,
+  https://loudcrowd.com/legal/dpa/
+standards:
+- id: openapi-3.0
+  conforms: true
+  evidence: >-
+    Both published definitions declare openapi 3.0.0. LoudCrowd's own ReadMe project records the
+    upload as "valid-with-warnings" ("Couldn't find property of /components//event/ecomm"), so the
+    document validates with a known schema warning.
+- id: oauth2
+  conforms: false
+  evidence: >-
+    No oauth2 securityScheme in either spec and no OAuth documented. Auth is an account API token in
+    X-LC-Account-Key (Brand API), an HMAC-SHA256 request signature (Attribution Events API), and an
+    HTTP bearer token (Creator Storefronts API).
+- id: oidc
+  conforms: false
+  evidence: /.well-known/openid-configuration returned 404 on every LoudCrowd host.
+- id: rfc9457-problem-details
+  conforms: false
+  evidence: >-
+    Errors are application/json objects with {code, message} (Brand API and product-data) or a
+    plain-text body ("success" / failure text on the Attribution Events API). No
+    application/problem+json media type appears anywhere in the specs.
+- id: rfc9116-security-txt
+  conforms: false
+  evidence: >-
+    404 on loudcrowd.com, api.loudcrowd.com and docs.loudcrowd.com. The only security.txt reachable
+    under a loudcrowd.com name is Intercom's, served on the help-center subdomain and canonicalised
+    to app.intercom.com.
+- id: rfc8594-sunset-header
+  conforms: false
+  evidence: No Sunset or Deprecation header, and no deprecation policy, in the specs or the 29 published docs pages.
+- id: cursor-pagination
+  conforms: true
+  evidence: >-
+    Brand API list_program_orders uses limit (1-100, default 50) + an opaque cursor, returns
+    nextCursor (null on the final page) and a Link header with rel="next". Creator Storefronts
+    /StorefrontFeedItems uses independent mediaCursor and productCursor.
+- id: idempotency
+  conforms: false
+  evidence: >-
+    No Idempotency-Key header anywhere. The Attribution Events API achieves replay-safety instead
+    through caller-supplied stable identifiers (order id, line_item_id, refund_line_item_id) with
+    upsert semantics — see conventions/loudcrowd-conventions.yml.
+- id: hmac-request-signing
+  conforms: true
+  evidence: >-
+    Attribution Events API requires X-Signature, a lowercase hexadecimal HMAC-SHA256 of the exact
+    raw request-body bytes keyed on an API token with the Write orders scope, sent without a
+    "sha256=" prefix. Documented with a working Python example at
+    https://docs.loudcrowd.com/reference/submit_order_event
+- id: retry-after
+  conforms: true
+  evidence: >-
+    "If an API returns 429 Too Many Requests, honor Retry-After when present." —
+    https://docs.loudcrowd.com/reference/rate-limits-and-handling-errors
+- id: iso-4217
+  conforms: true
+  evidence: priceCurrencyCode schema; currency fields on brandOrder use ISO 4217 codes (e.g. USD).
+- id: iso-8601
+  conforms: true
+  evidence: >-
+    orderedAt, lastUpdatedAt, cancelledAt, platform_updated_at, platform_refunded_at are all
+    RFC 3339 / ISO 8601 UTC timestamps.
+- id: bcp-47
+  conforms: true
+  evidence: >-
+    The browser SDK accepts a BCP-47 locale string, an Intl.Locale, or an
+    {language: ISO 639-1, region: ISO 3166-1 alpha-2} object via window.loudcrowd.init / changeLocale.
+- id: soc2-type-ii
+  conforms: true
+  evidence: >-
+    "These measures are verified through an independent SOC 2 Type II examination, the most recent
+    report for which is available to the Data Exporter upon request under Section 9 of this DPA."
+    — https://loudcrowd.com/legal/dpa/ (Annex II, Technical and Organisational Measures)
+- id: gdpr
+  conforms: true
+  evidence: >-
+    Data Privacy Addendum with EU Standard Contractual Clauses (Module 2, Controller to Processor,
+    Decision EU 2021/914), a UK Addendum, and a published sub-processor list.
+    https://loudcrowd.com/legal/dpa/ — effective 2026-01-01.
+- id: wcag-2.1-aa
+  conforms: partial
+  evidence: >-
+    LoudCrowd publishes an accessibility statement stating where it stands against WCAG 2.1 AA and
+    what is not yet conformant. https://loudcrowd.com/legal/accessibility/
+domain_standards:
+- id: null
+  conforms: false
+  evidence: >-
+    NO DOMAIN STANDARD DECLARED IN THE CONTRACT. Creator/influencer-marketing attribution and
+    commission reconciliation has no ratified interchange standard in the way SCIM, OData, OpenRTB,
+    HL7v2 or ISO 20022 serve their markets, and nothing in either LoudCrowd spec declares one — no
+    URN schema, no $metadata surface, no standard message type. The nearest thing in this market is
+    the affiliate-network integration surface, and LoudCrowd handles that with bilateral connectors
+    (Awin, Partnerize, Rakuten, CJ, Impact.com are named on the pricing page and Impact.com has its
+    own setup guide in the docs), not with a shared schema. Reward-only check: recorded as absent,
+    not as a failure.
+compliance_program:
+  published: true
+  url: https://loudcrowd.com/legal/dpa/
+  certifications:
+  - SOC 2 Type II (independent examination; report available to customers on request)
+  regimes:
+  - GDPR
+  - UK GDPR
+  - US state privacy laws
+  practices:
+  - TLS in transit, configuration evaluated quarterly against Qualys SSL Labs with any grade below A remediated
+  - TLS v1.2 or higher required
+  - Independent third-party penetration testing of production at least annually
+  - Access removal within seven business days of termination
+  trust_center: false
+  note: >-
+    The compliance posture is real and published, but it lives inside the DPA rather than in a trust
+    center — there is no trust.loudcrowd.com (DNS does not resolve) and no /security or /trust page.

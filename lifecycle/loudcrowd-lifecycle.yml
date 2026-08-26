@@ -1,0 +1,65 @@
+generated: '2026-08-25'
+method: searched
+source: >-
+  https://docs.loudcrowd.com/reference (all pages), openapi/loudcrowd-openapi.yml,
+  DNS + HTTP probes 2026-08-25
+versioning:
+  scheme: path-segment (Brand API only)
+  evidence: >-
+    The Brand API is versioned in the path — /api/v1/brand/{account_id}/... . The Attribution Events
+    API (/event/ecomm, /product-data) and the Creator Storefronts API (/StorefrontAmbassador etc.)
+    carry NO version segment at all. info.version in both published definitions is "0.0.0", which is
+    a ReadMe default rather than a released version number.
+  policy_published: false
+  note: No written versioning policy exists in the 29 published documentation pages.
+deprecation:
+  policy_published: false
+  sunset_header: false
+  deprecation_header: false
+  deprecated_operations: []
+  evidence: >-
+    Zero occurrences of "deprecat" or "sunset" across every published docs page and both OpenAPI
+    definitions. No RFC 8594 Sunset or Deprecation header is declared on any response.
+status_page:
+  published: false
+  evidence: >-
+    status.loudcrowd.com does not resolve (probed 2026-08-25). No status/uptime link appears on
+    loudcrowd.com, docs.loudcrowd.com or help.loudcrowd.com.
+sla:
+  published: false
+  evidence: >-
+    No SLA or uptime commitment on the pricing page or in the Platform Terms. The DPA commits to
+    security and breach-notification obligations, not availability targets.
+changelog:
+  published: false
+  evidence: >-
+    https://docs.loudcrowd.com/changelog returned 404; the ReadMe project's changelog module is
+    disabled in its own config. Zero occurrences of "changelog" or "release notes" across the
+    published docs. LoudCrowd publishes a marketing blog and a bi-weekly newsletter, neither of
+    which is a dated API changelog.
+  last_docs_update: '2026-04-01'
+  last_spec_update: '2026-07-22'
+  note: >-
+    Dates read from provider metadata, not inferred — docs pages carry updatedAt 2026-04-01, and
+    LoudCrowd's own ReadMe API-definition record reports created_at 2025-09-03 / updated_at
+    2026-07-22 for spec.json. The API definition is therefore actively maintained even though no
+    changelog is published.
+host_liveness:
+- host: api.loudcrowd.com
+  status: live
+  evidence: HTTP 404 on unknown paths from a real application server; /graphql answers.
+- host: store-api.loudcrowd.com
+  status: unresolvable
+  evidence: >-
+    NXDOMAIN on 2026-08-25. THIS IS THE DECLARED servers[] HOST OF THE CREATOR STOREFRONTS API in
+    both published definitions. Recorded as found; the spec value is left untouched because it is
+    what LoudCrowd publishes. Worth raising with the provider — a consumer following the published
+    contract cannot resolve the base URL.
+- host: pub.loudcrowd.com
+  status: live
+  evidence: embed.js served, HTTP 200, 1071 bytes.
+- host: docs.loudcrowd.com
+  status: live
+- host: app.loudcrowd.com
+  status: live
+  note: SPA; answers 200 for every path.

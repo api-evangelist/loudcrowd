@@ -1,0 +1,57 @@
+generated: '2026-08-25'
+method: searched
+source: >-
+  npm registry search + registry.npmjs.org metadata; docs.loudcrowd.com SDK install guide
+  (https://docs.loudcrowd.com/docs/install-the-loudcrowd-sdk-on-your-ecommerce-site)
+note: >-
+  LoudCrowd distributes its primary client library as an unpinned CDN module, not as a versioned
+  registry package. The only first-party registry artifact found is a single npm package that has
+  not been republished since 2022. PyPI, RubyGems, Packagist, crates.io and Maven Central were
+  probed and returned no LoudCrowd package.
+packages:
+- language: javascript
+  registry: cdn
+  name: LoudCrowd JS SDK (embed.js)
+  url: https://pub.loudcrowd.com/embed.js
+  install: '<script type="module" src="https://pub.loudcrowd.com/embed.js"></script>'
+  official: true
+  version: null
+  published: null
+  note: >-
+    Distribution is UNPINNED — the documented install is a bare script tag against
+    https://pub.loudcrowd.com/embed.js with no version segment and no integrity hash, so a consumer
+    cannot tell which build they are loading and neither can we. The URL is not an npm/unpkg/jsDelivr
+    path, so there is no registry or CDN metadata endpoint to read a version from. Probed 2026-08-25:
+    HTTP 200, 1071 bytes. Bootstraps via window.loudcrowd.init(SHOP_ID) and renders the storefront /
+    influencer-list web components plus affiliate attribution.
+- language: javascript
+  registry: npm
+  name: '@loudcrowd/program-sdk'
+  url: https://www.npmjs.com/package/@loudcrowd/program-sdk
+  install: npm install @loudcrowd/program-sdk
+  official: true
+  version: 1.0.0
+  published: '2022-02-10'
+  note: >-
+    First-party (published under the @loudcrowd npm scope by maintainers loudcrowd.brian,
+    loudcrowd-josh and cpayne_lc). "js sdk to enable loudcrowd program registration from your app."
+    ONLY ONE VERSION HAS EVER BEEN PUBLISHED and it predates every API surface documented on
+    docs.loudcrowd.com today; it is not referenced anywhere in the current documentation. Treat as
+    abandoned. No repository or homepage field is set in the registry metadata.
+registries_probed:
+- registry: npm
+  query: loudcrowd
+  result: 1 first-party package
+- registry: pypi
+  query: loudcrowd
+  status: 404
+- registry: rubygems
+  query: loudcrowd
+  status: 404
+- registry: packagist
+  query: loudcrowd
+  result: 0
+- registry: crates.io
+  result: none found
+- registry: maven-central
+  result: none found

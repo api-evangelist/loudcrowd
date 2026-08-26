@@ -1,0 +1,91 @@
+generated: '2026-08-25'
+method: searched
+source: https://loudcrowd.com/pricing/
+plan_count: 5
+currency: USD
+billing_period: monthly
+note: >-
+  LoudCrowd publishes list prices, which is unusual for this market, but the pricing is
+  PRODUCT-tier pricing, not API-tier pricing — no plan names an API call allowance, an API rate
+  limit or an API entitlement, and API access is not sold separately. Two products are genuinely
+  free (LoudCrowd's own framing: "No 'freemium' — free forever to enhance your workflows"), and the
+  three paid products share a single $999/mo floor. Everything above the floor is quoted through a
+  demo, so the effective ceiling is not published.
+plans:
+- name: ShopWith
+  category: AI Commerce
+  description: AI shopping concierge that lives on product detail pages and answers in the creators' voice.
+  price: 0
+  price_display: Free to start
+  currency: USD
+  billing_period: null
+  overage: usage-based pricing as you scale
+  included:
+  - Free for Awin, Partnerize, Rakuten, CJ and Impact customers
+  - Self-serve install — one snippet on your PDP
+  - Trained on your catalog + creator content
+  - Handles sizing, policy, fit and styling questions
+  - Add-to-cart and checkout assistance
+  limits: not published
+- name: AI Influencer Agents
+  category: AI Agents
+  description: Agents for creator discovery, outreach and moderation.
+  price: 0
+  price_display: Free forever
+  currency: USD
+  billing_period: null
+  overage: null
+  included:
+  - Platform independent — drops in alongside any tool
+  - Free for brands and agencies
+  byo_key: >-
+    Bring your own Anthropic key to run them — the model cost sits with the customer, which is how
+    the product can be free forever.
+  limits: not published
+- name: Creator Marketing Platform
+  category: Platform
+  description: Affiliate, influencer, ambassador and UGC programs run from one place.
+  price: 999
+  price_display: Starting at $999/mo
+  currency: USD
+  billing_period: month
+  included:
+  - Unlimited creators
+  - Auto-pilot for the busywork
+  - Custom-branded creator portal
+  limits: not published
+  purchase: Book a demo
+- name: Creator Storefronts
+  category: Commerce
+  description: Branded creator storefronts hosted on the brand's own domain.
+  price: 999
+  price_display: Starting at $999/mo
+  currency: USD
+  billing_period: month
+  included:
+  - Lives on your domain
+  - First-party attribution
+  - Creator-level reporting
+  limits: not published
+  purchase: Book a demo
+- name: Creator GEO
+  category: AI Content
+  description: Turns earned creator content into assets that earn AI recommendations.
+  price: 999
+  price_display: Starting at $999/mo
+  currency: USD
+  billing_period: month
+  included:
+  - FAQ, review and how-to assets
+  - Auto-generated structured data
+  - Rights and disclosure handled
+  limits: not published
+  purchase: Book a demo
+api_entitlement:
+  sold_separately: false
+  metered: false
+  note: >-
+    No plan on the pricing page mentions API access, API call volume or an API rate limit. The
+    Brand API and Attribution Events API are integration surfaces of the paid platform; the
+    Creator Storefronts API is an alternative to the hosted storefront components. Token creation
+    is self-service inside the app (Settings → API Keys) once a customer is on a plan.

@@ -1,0 +1,46 @@
+generated: '2026-08-25'
+method: derived
+status: candidate
+source: openapi/loudcrowd-openapi.yml, openapi/loudcrowd-creator-storefronts-openapi.yml
+note: >-
+  NO MCP SERVER IS PUBLISHED BY LOUDCROWD. Searched the developer docs (docs.loudcrowd.com, all 29
+  published pages plus its llms.txt), the marketing site, npm (@loudcrowd scope carries one 2022
+  package and nothing MCP-related) and the public MCP registries — nothing. LoudCrowd does ship an
+  "AI Influencer Agents" product and a ShopWith concierge, but those are LoudCrowd-operated agents
+  acting on the brand's behalf (the pricing page states you bring your own Anthropic key); they are
+  not an MCP server exposing LoudCrowd's API to a third-party agent. The tools below are a CANDIDATE
+  set derived one-to-one from the published OpenAPI operations. No endpoint is asserted.
+deployment:
+  mode: none
+  endpoint: null
+  install: null
+  package: null
+  auth: unknown
+  verified: derived
+tools:
+- name: list_program_orders
+  description: List orders attributed to members of a LoudCrowd program, cursor-paginated.
+  source_operation: openapi/loudcrowd-openapi.yml#list_program_orders
+- name: submit_order_event
+  description: >-
+    Submit an ORDER_CREATE, ORDER_UPDATE or ORDER_CANCEL event (including refund line items) for
+    attribution and commission calculation.
+  source_operation: openapi/loudcrowd-openapi.yml#submit_order_event
+- name: send_product_data
+  description: Batch upsert or delete up to 1000 product catalog records.
+  source_operation: openapi/loudcrowd-openapi.yml#send_product_data
+- name: get_storefront_ambassador
+  description: Retrieve ambassador information by LoudCrowd ambassador ID.
+  source_operation: openapi/loudcrowd-creator-storefronts-openapi.yml#GET /StorefrontAmbassador
+- name: get_storefront_collections
+  description: Retrieve the collections an ambassador is associated with.
+  source_operation: openapi/loudcrowd-creator-storefronts-openapi.yml#GET /StorefrontCollections
+- name: get_storefront_feed_items
+  description: Retrieve shoppable media and picked-product feed items in an ambassador collection.
+  source_operation: openapi/loudcrowd-creator-storefronts-openapi.yml#GET /StorefrontFeedItems
+- name: get_storefront_media_details
+  description: Retrieve detail for a shoppable media item.
+  source_operation: openapi/loudcrowd-creator-storefronts-openapi.yml#GET /StorefrontMediaDetails
+- name: get_storefront_product_details
+  description: Retrieve detail for an ambassador's picked product variant.
+  source_operation: openapi/loudcrowd-creator-storefronts-openapi.yml#GET /StorefrontProductDetails

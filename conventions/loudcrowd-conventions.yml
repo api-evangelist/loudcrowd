@@ -1,0 +1,200 @@
+generated: '2026-08-25'
+method: searched
+source: >-
+  https://docs.loudcrowd.com/reference/authentication-1,
+  https://docs.loudcrowd.com/reference/rate-limits-and-handling-errors,
+  https://docs.loudcrowd.com/reference/submit_order_event,
+  https://docs.loudcrowd.com/reference/submit_return_event,
+  openapi/loudcrowd-openapi.yml
+note: >-
+  LoudCrowd's three surfaces do not share conventions, and the provider says so explicitly:
+  "Response formats and authentication failures differ by API surface. Follow the endpoint-specific
+  contract rather than assuming every LoudCrowd API returns the same error shape." Everything below
+  is therefore recorded per surface.
+authentication:
+  style: per-surface
+  surfaces:
+  - surface: Brand API
+    scheme: apiKey
+    location: header
+    parameter: X-LC-Account-Key
+    token_source: LoudCrowd app → Settings → API Keys → Create API Token
+    scoped: true
+    scopes:
+    - Read orders
+    - Read programs
+    - Write orders
+    note: >-
+      Scopes are selected at token-creation time, per endpoint requirements. The token is shown once
+      and thereafter masked; deleting it revokes it. These are token permissions, not OAuth scopes —
+      there is no authorization server, so no scopes/ artifact is emitted.
+  - surface: Attribution Events API
+    scheme: hmac-signature
+    location: header
+    parameters:
+    - X-LC-SHOP-ID
+    - X-Signature
+    - X-LC-TOPIC
+    algorithm: HMAC-SHA256
+    encoding: lowercase hexadecimal, no "sha256=" prefix
+    signed_content: the exact raw request-body bytes
+    key: an API token carrying the Write orders scope
+    caution: >-
+      Reformatting the JSON after computing the signature changes the bytes and fails
+      authentication. X-LC-SHOP-ID is the ecommerce integration's Shop ID from the Integrations page
+      — not an Account ID and not an API token.
+  - surface: Creator Storefronts API
+    scheme: http
+    type: bearer
+  documented: https://docs.loudcrowd.com/reference/authentication-1
+idempotency:
+  supported: true
+  mechanism: caller-supplied stable identifiers with upsert semantics
+  header: null
+  note: >-
+    NO Idempotency-Key HEADER EXISTS. Replay-safety on the write surface is instead achieved by
+    caller-supplied natural keys, and LoudCrowd documents the discipline explicitly: "When retrying
+    Attribution Events requests, reuse the same order and refund IDs." Repeated delivery of the same
+    identifiers is an update, not a duplicate.
+  keys:
+  - surface: Attribution Events API
+    key: order id + refund_line_item_id
+    rule: >-
+      Assign one stable refund_line_item_id per original line_item_id, unique within the ecommerce
+      integration, and reuse it on every later update carrying the CURRENT CUMULATIVE amount, tax
+      and quantity refunded. Issuing a second refund ID for the same original line item is
+      explicitly wrong and will double-count.
+    scope: per ecommerce integration (Shop ID)
+    retention: not stated
+  - surface: Attribution Events API
+    key: platform_updated_at
+    rule: >-
+      Ordering discriminator. For ORDER_CANCEL, platform_updated_at must be later than the preceding
+      event or the cancellation is not applied — the topic header alone does not mark an order
+      cancelled.
+  - surface: product catalog
+    key: platform_product_id
+    rule: POST /product-data batch-upserts on platform_product_id; re-sending a record replaces it.
+    scope: per shop
+  documented: https://docs.loudcrowd.com/reference/submit_return_event
+pagination:
+  style: cursor
+  surfaces:
+  - surface: Brand API
+    params:
+      limit: integer, 1-100, default 50
+      cursor: opaque, from the preceding response
+    response_fields:
+    - data
+    - nextCursor
+    response_headers:
+    - name: Link
+      note: Next-page URL with rel="next". Absent on the final page.
+    terminator: nextCursor is null on the final page
+    ordering: most recently received first (order of LoudCrowd receipt, not order date)
+  - surface: Creator Storefronts API
+    params:
+      mediaCursor: opaque
+      productCursor: opaque
+    note: >-
+      Dual independent cursors on /StorefrontFeedItems because the feed interleaves shoppable media
+      and picked products drawn from two sources; a caller must carry both forward.
+field_expansion:
+  supported: false
+sparse_fieldsets:
+  supported: false
+metadata:
+  supported: false
+  note: No customer-defined metadata field on any resource.
+request_id_tracing:
+  supported: false
+  note: >-
+    No X-Request-Id, correlation-id or trace header is documented or declared in either spec. An
+    agent cannot obtain a server-side handle for a failed call.
+versioning:
+  style: path segment on the Brand API only (/api/v1/...); unversioned elsewhere
+  see: lifecycle/loudcrowd-lifecycle.yml
+error_envelope:
+  shape: '{code: integer, message: string}'
+  media_type: application/json
+  rfc9457: false
+  exception: Attribution Events API returns the plain-text body "success" on acceptance.
+  see: errors/loudcrowd-problem-types.yml
+rate_limit_signaling:
+  status_on_exhaustion: 429
+  response_headers:
+  - Retry-After
+  documented_limits: false
+  note: >-
+    Retry-After is the only runtime signal named, and it is qualified ("when present"). No
+    X-RateLimit-* or RFC 9238 RateLimit-* headers are documented or declared.
+  see: rate-limits/loudcrowd-rate-limits.yml
+dry_run_mode:
+  supported: false
+  grade: absent
+  note: >-
+    No sandbox, test mode, test-vs-live key prefix or validate-only flag exists on any surface. An
+    integrator's first ORDER_CREATE is against production commission calculation.
+reversibility:
+  grade: documented
+  note: >-
+    GRADED "documented", NOT "verified" — every write surface has a real correction path, but
+    LoudCrowd states no time window on any of them, so an agent cannot know how long it has to undo
+    what it just did. No delete, void or rollback operation exists anywhere in the contract;
+    reversal is always expressed as a compensating write.
+  write_surfaces:
+  - operation: submit_order_event
+    operationId: submit_order_event
+    path: POST /event/ecomm
+    action: creates or updates an attributed order and its commission calculation
+    reversal:
+      exists: true
+      mechanism: compensating write
+      operationId: submit_order_event
+      how: >-
+        Re-send the COMPLETE order payload with X-LC-TOPIC ORDER_CANCEL, platform_cancelled_at set
+        to the cancellation time, and platform_updated_at later than the preceding event. There is
+        no delete operation and the topic header alone does not cancel the order.
+      window: null
+      window_documented: false
+      docs: https://docs.loudcrowd.com/reference/submit_order_event
+  - operation: submit_order_event (refund/return)
+    operationId: submit_order_event
+    path: POST /event/ecomm
+    action: disqualifies or proportionally reduces commission on returned line items
+    reversal:
+      exists: true
+      mechanism: cumulative restatement
+      how: >-
+        Attach refund_line_items keyed on a stable refund_line_item_id per original line_item_id and
+        re-send with the CURRENT CUMULATIVE amount/tax/quantity. Because the value is cumulative and
+        not incremental, a refund can be corrected downward as well as upward by restating it —
+        including back to zero. Keep amount/tax/shipping as the order's gross pre-refund values;
+        LoudCrowd subtracts the refunds separately.
+      window: null
+      window_documented: false
+      docs: https://docs.loudcrowd.com/reference/submit_return_event
+  - operation: send_product_data
+    operationId: send_product_data
+    path: POST /product-data
+    action: upserts or deletes up to 1000 product catalog records
+    reversal:
+      exists: true
+      mechanism: re-upsert
+      how: >-
+        Re-send the affected records to restore them. NOTE THE ASYMMETRY WITH THE FILE-BASED FEED:
+        the CSV/SFTP product feed is full-catalog-replacement — anything omitted from a newer file
+        is marked inactive and its data made unavailable — so a truncated feed silently deactivates
+        the remainder of the catalog and is reversed only by sending the full catalog again.
+      window: null
+      window_documented: false
+      docs: https://docs.loudcrowd.com/docs/send-product-data-to-loudcrowd
+  read_only_surfaces:
+  - Brand API (list_program_orders)
+  - Creator Storefronts API (all five operations)
+cross_links:
+  errors: errors/loudcrowd-problem-types.yml
+  lifecycle: lifecycle/loudcrowd-lifecycle.yml
+  authentication: authentication/loudcrowd-authentication.yml
+  rate_limits: rate-limits/loudcrowd-rate-limits.yml
+  data_model: data-model/loudcrowd-data-model.yml

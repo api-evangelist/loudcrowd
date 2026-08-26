@@ -64,5 +64,30 @@
 > Full detail: **[Where this data comes from](https://apievangelist.com/about/where-our-data-comes-from)**
 <!-- API-EVANGELIST-PROVENANCE:END -->
 
-LoudCrowd is a company surfaced via the API Evangelist harvest backlog (source: secondary-market) and added to the network as a stub for full-pipeline profiling.
-- https://www.nasdaqprivatemarket.com/
+LoudCrowd is a creator-commerce platform for consumer brands — influencer, ambassador, affiliate and
+UGC programs, on-domain Creator Storefronts, a ShopWith AI shopping concierge, AI Influencer Agents,
+and Creator GEO.
+
+## Public API surface
+
+| API | Base URL | Auth | Ops |
+|---|---|---|---|
+| Brand API | `https://api.loudcrowd.com` | API token in `X-LC-Account-Key` (scoped) | 1 |
+| Attribution Events API | `https://api.loudcrowd.com` | HMAC-SHA256 `X-Signature` over raw body | 2 |
+| Creator Storefronts API | `https://store-api.loudcrowd.com/api` | HTTP bearer | 5 |
+
+- OpenAPI 3.0.0, harvested from LoudCrowd's own ReadMe documentation project — `openapi/`
+- Documentation: <https://docs.loudcrowd.com/reference>
+- `llms.txt`: <https://docs.loudcrowd.com/llms.txt> (published by the provider)
+
+## Notes from the 2026-08-25 profile
+
+- The embeddable web components (`https://pub.loudcrowd.com/embed.js`) are the primary integration
+  surface; the Creator Storefronts API exists as the alternative for teams rendering their own UI.
+- `store-api.loudcrowd.com`, the server declared by the Creator Storefronts API, did not resolve in
+  DNS when probed.
+- No status page, changelog, deprecation policy, sandbox, MCP server, agent card or `security.txt`.
+- Compliance posture (SOC 2 Type II, GDPR/UK GDPR, annual penetration testing) is published inside
+  the DPA rather than in a trust center: <https://loudcrowd.com/legal/dpa/>
+
+- <https://loudcrowd.com/>

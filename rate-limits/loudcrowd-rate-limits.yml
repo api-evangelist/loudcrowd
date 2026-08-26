@@ -1,0 +1,50 @@
+generated: '2026-08-25'
+method: searched
+source: https://docs.loudcrowd.com/reference/rate-limits-and-handling-errors
+limit_count: 0
+note: >-
+  LoudCrowd publishes a page titled "Rate limits and error handling" but states NO NUMERIC LIMIT on
+  it — no requests-per-window figure, no burst allowance, no per-key or per-account quota. What it
+  publishes is the runtime contract only: 429 on exhaustion, honor Retry-After when present,
+  otherwise bounded exponential backoff with jitter. An honest zero: the behaviour is documented,
+  the ceiling is not, so a caller cannot size a batch job in advance and has to discover the limit
+  by hitting it.
+rate_limits: []
+signaling:
+  status_on_exhaustion: 429
+  response_headers:
+  - name: Retry-After
+    documented: true
+    guaranteed: false
+    note: >-
+      Qualified in the docs as "when present" — the caller must implement backoff for the case where
+      it is absent.
+  - name: X-RateLimit-Limit
+    documented: false
+  - name: X-RateLimit-Remaining
+    documented: false
+  - name: RateLimit-Limit
+    documented: false
+  - name: RateLimit-Policy
+    documented: false
+  retry_guidance: >-
+    "Retry transient 429 and 5xx responses with a capped exponential delay and jitter. Do not
+    automatically retry 400 or 401 responses without changing the request. When retrying Attribution
+    Events requests, reuse the same order and refund IDs."
+  declared_in_spec:
+  - operation: send_product_data
+    path: POST /product-data
+    response: 429
+    note: The only operation in either definition that declares a 429 response.
+batch_ceilings:
+- operation: send_product_data
+  parameter: products[]
+  min: 1
+  max: 1000
+  note: >-
+    Not a rate limit, but the only hard published throughput ceiling on any LoudCrowd write surface.
+- operation: list_program_orders
+  parameter: limit
+  min: 1
+  max: 100
+  default: 50

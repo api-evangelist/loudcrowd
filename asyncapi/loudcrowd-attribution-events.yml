@@ -1,0 +1,86 @@
+generated: '2026-08-25'
+method: searched
+source: >-
+  https://docs.loudcrowd.com/reference/submit_order_event,
+  https://docs.loudcrowd.com/reference/submit_return_event,
+  openapi/loudcrowd-openapi.yml
+kind: event-catalog
+asyncapi_published: false
+webhooks_published: false
+direction: inbound
+note: >-
+  READ THE DIRECTION BEFORE READING THE CATALOG. LoudCrowd publishes no AsyncAPI document and sends
+  NO OUTBOUND WEBHOOKS — there is not one occurrence of "webhook" across all 29 published
+  documentation pages, and no callbacks or webhooks block in either OpenAPI definition. What it does
+  publish is the mirror image: a topic-keyed event INTAKE that the brand's commerce platform posts
+  INTO. The topics below are therefore things an integrator SENDS to LoudCrowd, not things
+  LoudCrowd will deliver to a subscriber endpoint. Because of that, no `Webhooks` pointer is wired
+  into apis.yml — that check asserts a provider advertises webhooks to its consumers, and LoudCrowd
+  does not. Recorded here so the event surface is not lost, and so the gap (no outbound
+  notification when attribution or commission calculation completes) is visible.
+channel:
+  endpoint: https://api.loudcrowd.com/event/ecomm
+  method: POST
+  operationId: submit_order_event
+  discriminator:
+    header: X-LC-TOPIC
+    note: One path, three topics. The body is the complete order payload for every topic.
+  content_type: application/json
+  auth:
+    scheme: HMAC-SHA256
+    headers:
+    - X-LC-SHOP-ID
+    - X-Signature
+    - X-LC-TOPIC
+    - Content-Type
+    see: conventions/loudcrowd-conventions.yml
+  delivery_semantics: >-
+    Asynchronous. HTTP 200 with the plain-text body "success" confirms authentication and acceptance
+    for processing ONLY — it does not confirm persistence, attribution or commission calculation.
+    LoudCrowd offers no callback, poll token or completion signal for the asynchronous half; the
+    only way to observe the outcome is to poll the Brand API's list_program_orders later.
+topics:
+- name: ORDER_CREATE
+  summary: A new order was placed and should be evaluated for creator attribution and commission.
+  payload: complete order payload
+  required_fields_note: >-
+    Send the full order, not a delta. lc_anon_id ties the order to the tracked device; sites without
+    the order-confirmation script can obtain it from window.loudcrowd.identifyDevice().
+- name: ORDER_UPDATE
+  summary: >-
+    Restates an existing order. Also the topic that carries returns and refunds — refund_line_items
+    ride on ORDER_UPDATE rather than on a topic of their own.
+  payload: complete order payload plus refund_line_items[]
+  rules:
+  - Keep amount, tax and shipping as the order's GROSS pre-refund values; LoudCrowd subtracts refunds separately.
+  - Include all original line_items alongside the new refund_line_items.
+  - Set platform_updated_at to the current timestamp.
+  - >-
+    refund_line_item_id must be stable and unique per original line_item_id within the ecommerce
+    integration, and later updates must carry the CURRENT CUMULATIVE amount, tax and quantity.
+  commission_effect:
+  - Refund amount equals the line item amount — the whole line item is disqualified for commission.
+  - Refund amount is less than the line item amount — commission is adjusted proportionally.
+- name: ORDER_CANCEL
+  summary: Cancels a previously submitted order.
+  payload: complete order payload
+  rules:
+  - Set platform_cancelled_at to the cancellation time.
+  - >-
+    Set platform_updated_at LATER than the preceding event. The topic header alone does not mark the
+    order cancelled — this is the documented failure mode.
+companion_intake:
+  endpoint: https://api.loudcrowd.com/product-data
+  method: POST
+  operationId: send_product_data
+  summary: Batch upsert/delete of 1-1000 product catalog records; the API twin of the CSV/SFTP product feed.
+  note: >-
+    Same header auth shape (X-LC-SHOP-ID, X-Signature, X-LC-TOPIC) but a synchronous JSON response
+    carrying success, message and processedCount.
+outbound_gap:
+  has_outbound_events: false
+  detail: >-
+    An integrator that submits an order event has no push notification when attribution resolves,
+    when a commission is calculated, when a creator joins a program, or when a storefront changes.
+    Every read is a poll against list_program_orders. For an agent this is the difference between
+    reacting to an event and running a scheduled reconciliation loop.

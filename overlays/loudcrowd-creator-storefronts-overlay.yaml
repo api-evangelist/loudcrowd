@@ -1,0 +1,26 @@
+overlay: 1.0.0
+info:
+  title: API Evangelist enhancements for the LoudCrowd Creator Storefronts API
+  version: 1.0.0
+x-generated: '2026-08-25'
+x-method: generated
+x-source: openapi/loudcrowd-creator-storefronts-openapi.yml
+extends: openapi/loudcrowd-creator-storefronts-openapi.yml
+actions:
+- target: $.info
+  update:
+    x-apievangelist-profile: https://apis.io/provider/loudcrowd/
+    x-apievangelist-harvested: '2026-08-25'
+    x-apievangelist-source: >-
+      https://dash.readme.com/api/v1/api-registry/m0mkr29tkmf44ot1o — the public ReadMe API-registry
+      URL referenced by the oasPublicUrl of LoudCrowd's own docs project (@docs-loudcrowd/v1).
+- target: $.servers[0]
+  update:
+    x-apievangelist-liveness: >-
+      DEAD HOST. The declared server host store-api.loudcrowd.com did not resolve in DNS (NXDOMAIN)
+      when probed on 2026-08-25. Recorded, not repaired — the value is what LoudCrowd publishes.
+- target: $.paths['/StorefrontFeedItems'].get
+  update:
+    x-apievangelist-note: >-
+      Dual-cursor pagination — mediaCursor and productCursor advance independently because the feed
+      interleaves shoppable media and picked products from two sources.

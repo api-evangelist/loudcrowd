@@ -1,0 +1,114 @@
+generated: '2026-08-25'
+method: searched
+source: direct HTTP probes of every apis.yml host and every OpenAPI servers[] host, 2026-08-25
+hit_count: 0
+note: >-
+  NOTHING WAS SAVED. Every /.well-known/ path on every LoudCrowd-controlled host returned 404 or
+  failed to resolve. Two 200s were observed and BOTH are rejected: app.loudcrowd.com is a
+  single-page-app catch-all that answers 200 with the same 1,330-byte HTML shell for every path
+  probed (including paths that cannot exist), and help.loudcrowd.com serves a real RFC 9116
+  security.txt that belongs to INTERCOM, not LoudCrowd — its own Canonical field points at
+  https://app.intercom.com/.well-known/security.txt and its contacts are bugcrowd.com/intercom and
+  security@intercom.com. Crediting LoudCrowd for its help-desk vendor's disclosure program would be
+  false, so no SecurityTxt, Security or WellKnown pointer is emitted from this file.
+  store-api.loudcrowd.com — the server declared by the Creator Storefronts OpenAPI — does not
+  resolve in DNS (NXDOMAIN), so no probe could be performed against it.
+hosts:
+- host: https://loudcrowd.com
+  documents:
+  - path: /.well-known/security.txt
+    status: 404
+  - path: /.well-known/openid-configuration
+    status: 404
+  - path: /.well-known/oauth-authorization-server
+    status: 404
+  - path: /.well-known/oauth-protected-resource
+    status: 404
+  - path: /.well-known/api-catalog
+    status: 404
+  - path: /.well-known/ai-plugin.json
+    status: 404
+  - path: /.well-known/agent-card.json
+    status: 404
+  - path: /.well-known/agent.json
+    status: 404
+- host: https://api.loudcrowd.com
+  documents:
+  - path: /.well-known/security.txt
+    status: 404
+  - path: /.well-known/openid-configuration
+    status: 404
+  - path: /.well-known/oauth-authorization-server
+    status: 404
+  - path: /.well-known/oauth-protected-resource
+    status: 404
+  - path: /.well-known/api-catalog
+    status: 404
+  - path: /.well-known/ai-plugin.json
+    status: 404
+  - path: /.well-known/agent-card.json
+    status: 404
+  - path: /.well-known/agent.json
+    status: 404
+- host: https://docs.loudcrowd.com
+  documents:
+  - path: /.well-known/security.txt
+    status: 404
+  - path: /.well-known/openid-configuration
+    status: 404
+  - path: /.well-known/oauth-authorization-server
+    status: 404
+  - path: /.well-known/api-catalog
+    status: 404
+  - path: /.well-known/ai-plugin.json
+    status: 404
+  - path: /.well-known/agent-card.json
+    status: 404
+  - path: /.well-known/agent.json
+    status: 404
+- host: https://app.loudcrowd.com
+  soft_404_control:
+    note: >-
+      SPA catch-all. Every probed path returned HTTP 200 with an identical 1,330-byte HTML shell,
+      including /.well-known/agent-card.json and /.well-known/api-catalog. Treated as a miss on
+      every path; no document recorded, no pointer emitted.
+    status: 200
+    bytes: 1330
+    content_type: text/html
+  documents: []
+- host: https://help.loudcrowd.com
+  documents:
+  - path: /.well-known/security.txt
+    status: 200
+    third_party: intercom
+    note: >-
+      Served by Intercom (the help-center vendor), not by LoudCrowd. Canonical:
+      https://app.intercom.com/.well-known/security.txt; Contact: https://bugcrowd.com/intercom and
+      mailto:security@intercom.com. NOT saved and NOT counted as a LoudCrowd document.
+  - path: /.well-known/openid-configuration
+    status: 404
+  - path: /.well-known/oauth-authorization-server
+    status: 404
+  - path: /.well-known/oauth-protected-resource
+    status: 404
+  - path: /.well-known/api-catalog
+    status: 404
+  - path: /.well-known/ai-plugin.json
+    status: 404
+  - path: /.well-known/agent-card.json
+    status: 404
+  - path: /.well-known/agent.json
+    status: 404
+- host: https://pub.loudcrowd.com
+  documents:
+  - path: /.well-known/security.txt
+    status: 403
+    note: S3-backed asset origin; AccessDenied on all /.well-known/ paths.
+  - path: /.well-known/agent-card.json
+    status: 403
+  - path: /.well-known/agent.json
+    status: 403
+- host: https://store-api.loudcrowd.com
+  unresolvable: true
+  note: NXDOMAIN — declared OpenAPI server host does not resolve; no probe possible.
+  documents: []

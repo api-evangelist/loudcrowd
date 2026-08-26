@@ -1,0 +1,38 @@
+# docs.loudcrowd Documentation
+
+> Documentation for docs.loudcrowd
+
+Append .md to any documentation page URL to get its markdown version.
+
+## Guides
+- [Installing Storefront in Shopify](https://docs.loudcrowd.com/docs/installing-storefront-in-shopify.md): Install the LoudCrowd Storefront in Shopify
+- [Installing Influencer List page in Shopify](https://docs.loudcrowd.com/docs/installing-influencer-list-page-in-shopify.md): How to install the Influencer List page in Shopify
+- [How to Integrate Shopify](https://docs.loudcrowd.com/docs/how-to-integrate-shopify.md): Connect your Shopify to measure the value of your programs
+- [Order Attribution for Custom E-commerce Pages](https://docs.loudcrowd.com/docs/implementation-guide-installing-order-attribution-for-custom-ecomm-pages.md): For Custom or Headless e-commerce sites, a step-by-step guide for installing our Order Attribution code.
+- [Install the LoudCrowd Storefront page in your custom website](https://docs.loudcrowd.com/docs/install-the-loudcrowd-storefront-page-in-your-custom-website.md)
+- [Set up and integrate new API client in Salesforce Account Manager](https://docs.loudcrowd.com/docs/setup-a-new-api-client-in-salesforce-account-manager-and-integrate-that-client-with-loudcrowd.md): Your guide for configuring and integrating an API client in SAM with LoudCrowd
+- [Integrating Salesforce in the LoudCrowd App](https://docs.loudcrowd.com/docs/integrating-salesforce-in-the-loudcrowd-app.md)
+- [Install the LoudCrowd Storefront page in your Salesforce Website](https://docs.loudcrowd.com/docs/install-the-loudcrowd-storefront-page-in-your-salesforce-website.md)
+- [Managing Salesforce Affiliate Codes](https://docs.loudcrowd.com/docs/managing-salesforce-affiliate-codes.md)
+- [Integrate Custom e-commerce Store in the LoudCrowd App](https://docs.loudcrowd.com/docs/integrate-custom-ecommerce-store-in-the-loudcrowd-app.md)
+- [Install the LoudCrowd SDK on your e-commerce Site](https://docs.loudcrowd.com/docs/install-the-loudcrowd-sdk-on-your-ecommerce-site.md): Install the LoudCrowd SDK to set up Storefronts, Creator Widget and affiliate tracking across your website.
+- [Send product data to LoudCrowd](https://docs.loudcrowd.com/docs/send-product-data-to-loudcrowd.md)
+- [Return File Processing for Commissions Adjustments](https://docs.loudcrowd.com/docs/return-file-processing-for-commissions-adjustments.md): Client guide for sending LoudCrowd returns data to avoid paying commissions on returned products.
+- [Setup Impact.com Integration for loading your Partners as Ambassadors with Storefronts](https://docs.loudcrowd.com/docs/setup-impactcom-integration-for-loading-your-partners-as-ambassadors-with-storefronts.md): Steps to setup an Impact.com integration so you can turn your Partners into LoudCrowd Ambassadors with a Storefront link
+- [Implementation Overview: Custom eCommerce](https://docs.loudcrowd.com/docs/implementation-overview-custom-ecommerce.md)
+- [Install the LoudCrowd Storefront page in your Custom Website](https://docs.loudcrowd.com/docs/install-the-loudcrowd-storefront-page-in-your-custom-website-1.md)
+- [Creator Storefront & Affiliate Link Structure](https://docs.loudcrowd.com/docs/creator-storefront-affiliate-link-structue.md): This article explains the URL structure of each type of affiliate link generated from LoudCrowd Creator Widget and Storefronts
+- [Install the LoudCrowd SDK on your e-commerce Site](https://docs.loudcrowd.com/docs/partnerize-install-the-loudcrowd-sdk-on-your-e-commerce-site.md): Install the LoudCrowd SDK to set up ShopWith your website.
+- [Styling Storefront App Blocks](https://docs.loudcrowd.com/docs/styling-storefront-app-blocks.md)
+- [Styling Influencer List App Blocks](https://docs.loudcrowd.com/docs/styling-influencer-list-app-blocks.md)
+- [Enable Loudcrowd's Widget on Your Product Detail Page](https://docs.loudcrowd.com/docs/enable-loudcrowds-widget-on-your-product-detail-page.md)
+- [Install Attribution snippet into Order Confirmed page](https://docs.loudcrowd.com/docs/install-attribution-snippet-into-order-confirmed-page.md)
+- [Install the LoudCrowd Influencer List page in your Salesforce Website](https://docs.loudcrowd.com/docs/install-the-loudcrowd-influencer-list-page-in-your-salesforce-website.md)
+- [Install the LoudCrowd Influencer List page in your Custom Website](https://docs.loudcrowd.com/docs/install-the-loudcrowd-influencer-list-page-in-your-custom-website.md)
+
+## API Reference
+- [Authentication](https://docs.loudcrowd.com/reference/authentication-1.md)
+- [Rate limits and error handling](https://docs.loudcrowd.com/reference/rate-limits-and-handling-errors.md): Handle LoudCrowd API responses and retries safely.
+- [List program orders](https://docs.loudcrowd.com/reference/list_program_orders.md): Retrieves orders attributed to members of a LoudCrowd program. Each result identifies the program member and includes attribution methods, financial values, and platform timestamps. Orders are returned in the order LoudCrowd received them, with the most recent first. Requires the **Read orders** and **Read programs** scopes.
+- [Submit Order Event](https://docs.loudcrowd.com/reference/submit_order_event.md): Submit order data to LoudCrowd for attribution and commission calculation.
+- [Submit Return Event](https://docs.loudcrowd.com/reference/submit_return_event.md): How to submit refunds/returns using the Events API.

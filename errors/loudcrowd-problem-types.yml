@@ -1,0 +1,98 @@
+generated: '2026-08-25'
+method: derived
+source: >-
+  openapi/loudcrowd-openapi.yml (components.responses + per-operation 4xx/5xx), enriched from
+  https://docs.loudcrowd.com/reference/rate-limits-and-handling-errors
+format: json
+note: >-
+  NOT RFC 9457. LoudCrowd returns a plain {code, message} JSON object, not application/problem+json,
+  and there are no stable machine-readable error type URIs or symbolic error codes to catalog — the
+  discriminator is the HTTP status alone. The Attribution Events API diverges further: its success
+  response is the plain-text body "success", and the docs tell integrators to verify that body
+  rather than trust the status. LoudCrowd's own docs warn about this: "Response formats and
+  authentication failures differ by API surface. Follow the endpoint-specific contract rather than
+  assuming every LoudCrowd API returns the same error shape."
+envelope:
+  media_type: application/json
+  fields:
+  - name: code
+    type: integer
+    description: Mirrors the HTTP status code.
+  - name: message
+    type: string
+    description: Short human-readable summary (e.g. "Bad Request", "Not Authorized").
+  exception:
+    surface: Attribution Events API (POST /event/ecomm)
+    note: Success is HTTP 200 with the plain-text body "success"; other bodies must be logged and investigated.
+problems:
+- status: 400
+  title: Bad Request
+  description: A parameter, header, or request payload is invalid.
+  retryable: false
+  remediation: Do not retry without changing the request.
+  source_operation:
+  - openapi/loudcrowd-openapi.yml#list_program_orders
+  - openapi/loudcrowd-openapi.yml#submit_order_event
+  - openapi/loudcrowd-openapi.yml#send_product_data
+  - openapi/loudcrowd-creator-storefronts-openapi.yml#GET /StorefrontAmbassador
+- status: 401
+  title: Unauthorized
+  description: >-
+    Authentication is missing or invalid, or the request is not authorized. On the Attribution
+    Events API this most often means the X-Signature HMAC did not match — signing anything other
+    than the exact raw bytes sent on the wire (for example reformatting the JSON after signing)
+    fails here.
+  retryable: false
+  remediation: Do not retry automatically. Re-check the token, scope and signature bytes.
+  source_operation:
+  - openapi/loudcrowd-openapi.yml#list_program_orders
+  - openapi/loudcrowd-openapi.yml#submit_order_event
+  - openapi/loudcrowd-openapi.yml#send_product_data
+- status: 403
+  title: Forbidden
+  description: The authenticated caller is not permitted to perform the action.
+  retryable: false
+  remediation: Add the required token scope (Read orders / Read programs / Write orders) in Settings → API Keys.
+  source_operation:
+  - openapi/loudcrowd-openapi.yml#components.responses.403
+- status: 404
+  title: Not Found
+  description: The requested endpoint or resource does not exist.
+  retryable: false
+  source_operation:
+  - openapi/loudcrowd-creator-storefronts-openapi.yml#GET /StorefrontAmbassador
+  - openapi/loudcrowd-creator-storefronts-openapi.yml#GET /StorefrontCollections
+  - openapi/loudcrowd-creator-storefronts-openapi.yml#GET /StorefrontFeedItems
+  - openapi/loudcrowd-creator-storefronts-openapi.yml#GET /StorefrontMediaDetails
+  - openapi/loudcrowd-creator-storefronts-openapi.yml#GET /StorefrontProductDetails
+- status: 422
+  title: Unprocessable Entity
+  description: The product batch was well-formed but could not be processed as submitted.
+  retryable: false
+  source_operation:
+  - openapi/loudcrowd-openapi.yml#send_product_data
+- status: 429
+  title: Too Many Requests
+  description: The request was rate limited.
+  retryable: true
+  remediation: >-
+    Honor Retry-After when present; otherwise retry with bounded exponential backoff and jitter.
+    When retrying Attribution Events requests, reuse the same order and refund IDs.
+  source_operation:
+  - openapi/loudcrowd-openapi.yml#send_product_data
+- status: 500
+  title: Server Error
+  description: LoudCrowd encountered an unexpected error.
+  retryable: true
+  remediation: Retry with a capped exponential delay and jitter.
+  source_operation:
+  - openapi/loudcrowd-openapi.yml#list_program_orders
+  - openapi/loudcrowd-openapi.yml#submit_order_event
+  - openapi/loudcrowd-openapi.yml#send_product_data
+- status: 503
+  title: Service Unavailable
+  description: The service is temporarily unavailable.
+  retryable: true
+  remediation: Retry with bounded backoff.
+  source_operation:
+  - openapi/loudcrowd-openapi.yml#components.responses.503

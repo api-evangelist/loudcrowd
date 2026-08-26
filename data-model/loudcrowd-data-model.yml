@@ -1,0 +1,173 @@
+generated: '2026-08-25'
+method: derived
+source: >-
+  openapi/loudcrowd-openapi.yml ($ref graph + id-reference fields),
+  openapi/loudcrowd-creator-storefronts-openapi.yml,
+  enriched from https://docs.loudcrowd.com/docs/creator-storefront-affiliate-link-structue
+note: >-
+  Two loosely-coupled halves joined by one entity. The storefront half is read-only and is keyed on
+  lcAmbassadorId; the attribution half is write-only and is keyed on the caller's own platform
+  identifiers. The join is the ambassador — brandOrder.ambassadorLcId carries the same opaque
+  base64-shaped LoudCrowd ID that the storefront operations take as lcAmbassadorId, which is the
+  only identifier that crosses the two surfaces.
+entities:
+- name: Account
+  id_field: account_id
+  id_shape: opaque string, shown under "API identifiers" in the LoudCrowd app
+  surface: Brand API
+  note: Path-scoped tenant root. Not returned as a resource; only used as a path parameter.
+- name: Program
+  id_field: program_id
+  id_shape: opaque string, shown under "API identifiers" in the LoudCrowd app
+  surface: Brand API
+- name: Ambassador
+  id_field: lcAmbassadorId / ambassadorLcId
+  id_shape: 'opaque, max 32 chars, pattern ^[a-zA-Z0-9+/]*={0,2}$ (base64-shaped, e.g. Y3VzdG9tZXI6MTIz)'
+  surface: both
+  note: >-
+    THE JOIN ENTITY. Called lcAmbassadorId on the storefront read surface and ambassadorLcId on
+    brandOrder. The base64 shape decodes to a typed global id (the example Y3VzdG9tZXI6MTIz is
+    "customer:123"), which is the signature of a Relay-style GraphQL core behind the REST facade —
+    consistent with the undocumented GraphQL endpoint at api.loudcrowd.com/graphql.
+- name: Shop
+  id_field: shopId / shopifyId / X-LC-SHOP-ID
+  surface: both
+  note: >-
+    Three names for the integration boundary. shopId and shopifyId are alternatives on the
+    storefront reads (either may be supplied); X-LC-SHOP-ID is the required header on every
+    Attribution Events write. Uniqueness of refund_line_item_id is scoped to this entity.
+- name: StorefrontCollection
+  id_field: storefrontCollectionId / sharedCollectionId
+  schema: inline
+  surface: Creator Storefronts API
+- name: FeedItem
+  schema: mediaItem | taggedProductItem
+  surface: Creator Storefronts API
+  note: Polymorphic — the feed interleaves media and picked products, hence the dual cursors.
+- name: MediaItem
+  schema: mediaItem
+  id_field: mediaId / sharedMediaId
+  surface: Creator Storefronts API
+- name: Product
+  schema: productItem / productIngestRecord
+  id_field: platform_product_id (write) / productId (feed)
+  surface: both
+- name: ProductVariant
+  schema: productVariantItem / productVariantIngestRecord
+  id_field: productVariantId
+  surface: both
+- name: SelectedOption
+  schema: selectedOptionItem
+  surface: Creator Storefronts API
+- name: ProductPrices
+  schema: productPrices
+  surface: both
+- name: PriceCurrencyCode
+  schema: priceCurrencyCode
+  surface: both
+  note: ISO 4217.
+- name: BrandOrder
+  schema: brandOrder
+  id_field: orderId
+  surface: Brand API
+  fields:
+  - orderId
+  - ambassadorLcId
+  - attributionTypes
+  - commissionAmount
+  - amount
+  - tax
+  - shipping
+  - refundAmount
+  - refundTax
+  - currency
+  - cancelledAt
+  - orderedAt
+  - lastUpdatedAt
+- name: OrderEvent
+  surface: Attribution Events API
+  id_field: order id (caller-supplied)
+  note: >-
+    Not a returned resource — a write-only envelope. The topic (ORDER_CREATE / ORDER_UPDATE /
+    ORDER_CANCEL) is carried in the X-LC-TOPIC header rather than in the body, so the event type is
+    not part of the data model as expressed in the schema.
+- name: LineItem
+  surface: Attribution Events API
+  id_field: line_item_id (caller-supplied)
+- name: RefundLineItem
+  surface: Attribution Events API
+  id_field: refund_line_item_id (caller-supplied, must be stable per line_item_id)
+relationships:
+- from: Account
+  to: Program
+  type: has_many
+  via: path /api/v1/brand/{account_id}/programs/{program_id}
+- from: Program
+  to: BrandOrder
+  type: has_many
+  via: path .../orders
+- from: BrandOrder
+  to: Ambassador
+  type: belongs_to
+  via: ambassadorLcId
+- from: Ambassador
+  to: StorefrontCollection
+  type: has_many
+  via: GET /StorefrontCollections?lcAmbassadorId
+- from: Ambassador
+  to: Shop
+  type: belongs_to
+  via: shopId | shopifyId
+- from: StorefrontCollection
+  to: FeedItem
+  type: has_many
+  via: GET /StorefrontFeedItems?storefrontCollectionId
+- from: FeedItem
+  to: MediaItem
+  type: has_one
+  via: polymorphic feed item type
+- from: FeedItem
+  to: Product
+  type: has_one
+  via: polymorphic feed item type (taggedProductItem)
+- from: MediaItem
+  to: Product
+  type: has_many
+  via: taggedProductItem
+- from: Product
+  to: ProductVariant
+  type: has_many
+  via: variants[] / parentId in the CSV feed
+- from: Product
+  to: ProductPrices
+  type: has_one
+  via: prices
+- from: ProductVariant
+  to: SelectedOption
+  type: has_many
+  via: selectedOptionItem
+- from: OrderEvent
+  to: LineItem
+  type: has_many
+  via: line_items[]
+- from: OrderEvent
+  to: RefundLineItem
+  type: has_many
+  via: refund_line_items[]
+- from: RefundLineItem
+  to: LineItem
+  type: belongs_to
+  via: line_item_id
+  cardinality_rule: >-
+    Exactly one refund_line_item_id per original line_item_id. Issuing a second refund ID for the
+    same line item double-counts the return.
+- from: OrderEvent
+  to: BrandOrder
+  type: becomes
+  via: >-
+    order id — an event written to POST /event/ecomm is what later surfaces as a brandOrder on the
+    Brand API, after asynchronous attribution and commission calculation.
+- from: Shop
+  to: Product
+  type: has_many
+  via: POST /product-data (X-LC-SHOP-ID scoped)

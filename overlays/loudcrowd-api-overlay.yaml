@@ -1,0 +1,39 @@
+overlay: 1.0.0
+info:
+  title: API Evangelist enhancements for the LoudCrowd API
+  version: 1.0.0
+x-generated: '2026-08-25'
+x-method: generated
+x-source: openapi/loudcrowd-openapi.yml
+extends: openapi/loudcrowd-openapi.yml
+actions:
+- target: $.info
+  update:
+    x-apievangelist-profile: https://apis.io/provider/loudcrowd/
+    x-apievangelist-harvested: '2026-08-25'
+    x-apievangelist-source: >-
+      Embedded server-rendered API definition on https://docs.loudcrowd.com/reference (ReadMe
+      project docs-loudcrowd, definition uri /branches/1/apis/spec.json).
+- target: $.paths['/api/v1/brand/{account_id}/programs/{program_id}/orders'].get
+  update:
+    x-apievangelist-note: >-
+      Only read operation in the Brand API. Cursor pagination via limit (max 100, default 50) +
+      opaque cursor, with a Link rel="next" header and a nextCursor body field that is null on the
+      final page. Requires the Read orders and Read programs token scopes.
+- target: $.paths['/event/ecomm'].post
+  update:
+    x-apievangelist-note: >-
+      Topic-multiplexed single endpoint. X-LC-TOPIC selects ORDER_CREATE, ORDER_UPDATE or
+      ORDER_CANCEL; the full order payload is required for every topic. Success is HTTP 200 with the
+      plain-text body "success", which confirms authentication and acceptance for asynchronous
+      processing ONLY — not persistence, attribution or commission calculation.
+    x-apievangelist-reversal: >-
+      There is no delete or void operation. Corrections are made by re-sending the order with
+      ORDER_UPDATE (or ORDER_CANCEL with platform_cancelled_at set), and by attaching
+      refund_line_items keyed on a stable refund_line_item_id carrying cumulative amounts.
+- target: $.paths['/product-data'].post
+  update:
+    x-apievangelist-note: >-
+      Batch of 1-1000 productIngestRecord items. Mirrors the CSV/SFTP product-feed ingestion
+      pipeline so existing field mappings can be reused. Note the file-based feed is FULL-CATALOG
+      replacement semantics — anything omitted from a newer file is marked inactive.
