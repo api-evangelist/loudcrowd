@@ -37,63 +37,145 @@ maintainers:
 - FN: APIs.json
   email: info@apis.io
 apis:
-- name: LoudCrowd Brand API
+- aid: loudcrowd:loudcrowd-attribution-events-api-api
+  name: LoudCrowd Attribution Events API
   description: >-
-    Read-only, account-scoped REST API for pulling orders attributed to members of a LoudCrowd program.
-    Each result identifies the program member and includes attribution methods, financial values and
-    platform timestamps, cursor-paginated with the most recently received orders first. Authenticated
-    with an account API token sent in the X-LC-Account-Key header and requires the Read orders and
-    Read programs scopes.
+    The Attribution Events API API from LoudCrowd — 1 operation(s) for attribution events api.
   humanURL: https://docs.loudcrowd.com/reference/list_program_orders
   baseURL: https://api.loudcrowd.com
   tags:
-  - Creator Marketing
-  - Affiliate Marketing
-  - Attribution
-  - Ecommerce
+  - Attribution Events API
   properties:
   - type: OpenAPI
-    url: openapi/loudcrowd-openapi.yml
+    url: openapi/loudcrowd-attribution-events-api-api-openapi.yml
   - type: Documentation
     url: https://docs.loudcrowd.com/reference/list_program_orders
-- name: LoudCrowd Attribution Events API
-  description: >-
-    Single-endpoint event intake for custom and headless commerce stacks. POST /event/ecomm accepts the
-    complete order payload for ORDER_CREATE, ORDER_UPDATE and ORDER_CANCEL topics selected by the
-    X-LC-TOPIC header, including refund line items for return-driven commission adjustment, and
-    POST /product-data batch-upserts or deletes product catalog records. Requests are authenticated
-    with a lowercase hex HMAC-SHA256 signature of the exact raw request body in X-Signature, keyed on
-    an API token carrying the Write orders scope, alongside the integration's X-LC-SHOP-ID.
-  humanURL: https://docs.loudcrowd.com/reference/submit_order_event
-  baseURL: https://api.loudcrowd.com
-  tags:
-  - Attribution
-  - Ecommerce
-  - Commissions
-  - Webhooks
-  properties:
-  - type: OpenAPI
-    url: openapi/loudcrowd-openapi.yml
   - type: Documentation
     url: https://docs.loudcrowd.com/reference/submit_order_event
-- name: LoudCrowd Creator Storefronts API
-  description: >-
-    Data API to be used in place of the hosted creator storefront web components, leaving the caller
-    responsible for rendering. Five read operations return ambassador information, an ambassador's
-    collections, paginated collection feed items mixing shoppable media and picked products, media
-    detail for a shoppable post, and product-variant detail for an ambassador's picked product.
-    Bearer-token authenticated.
-  humanURL: https://docs.loudcrowd.com/docs/install-the-loudcrowd-storefront-page-in-your-custom-website
-  baseURL: https://store-api.loudcrowd.com/api
+  - type: Documentation
+    url: >-
+      https://docs.loudcrowd.com/docs/install-the-loudcrowd-storefront-page-in-your-custom-website
+- aid: loudcrowd:loudcrowd-brand-api-api
+  name: LoudCrowd Brand API
+  description: The Brand API API from LoudCrowd — 1 operation(s) for brand api.
+  humanURL: https://docs.loudcrowd.com/reference/list_program_orders
+  baseURL: https://api.loudcrowd.com
   tags:
-  - Creator Commerce
-  - Social Commerce
-  - Ecommerce
+  - Brand API
   properties:
   - type: OpenAPI
-    url: openapi/loudcrowd-creator-storefronts-openapi.yml
+    url: openapi/loudcrowd-brand-api-api-openapi.yml
   - type: Documentation
-    url: https://docs.loudcrowd.com/docs/install-the-loudcrowd-storefront-page-in-your-custom-website
+    url: https://docs.loudcrowd.com/reference/list_program_orders
+  - type: Documentation
+    url: https://docs.loudcrowd.com/reference/submit_order_event
+  - type: Documentation
+    url: >-
+      https://docs.loudcrowd.com/docs/install-the-loudcrowd-storefront-page-in-your-custom-website
+- aid: loudcrowd:loudcrowd-product-data-api
+  name: LoudCrowd Product Data API
+  description: The Product Data API from LoudCrowd — 1 operation(s) for product data.
+  humanURL: https://docs.loudcrowd.com/reference/list_program_orders
+  baseURL: https://api.loudcrowd.com
+  tags:
+  - Product Data
+  properties:
+  - type: OpenAPI
+    url: openapi/loudcrowd-product-data-api-openapi.yml
+  - type: Documentation
+    url: https://docs.loudcrowd.com/reference/list_program_orders
+  - type: Documentation
+    url: https://docs.loudcrowd.com/reference/submit_order_event
+  - type: Documentation
+    url: >-
+      https://docs.loudcrowd.com/docs/install-the-loudcrowd-storefront-page-in-your-custom-website
+- aid: loudcrowd:loudcrowd-storefrontambassador-api
+  name: LoudCrowd Storefront Ambassador API
+  description: The StorefrontAmbassador API from LoudCrowd — 1 operation(s) for storefrontambassador.
+  humanURL: https://docs.loudcrowd.com/reference/list_program_orders
+  baseURL: https://api.loudcrowd.com
+  tags:
+  - StorefrontAmbassador
+  properties:
+  - type: OpenAPI
+    url: openapi/loudcrowd-storefrontambassador-api-openapi.yml
+  - type: Documentation
+    url: https://docs.loudcrowd.com/reference/list_program_orders
+  - type: Documentation
+    url: https://docs.loudcrowd.com/reference/submit_order_event
+  - type: Documentation
+    url: >-
+      https://docs.loudcrowd.com/docs/install-the-loudcrowd-storefront-page-in-your-custom-website
+- aid: loudcrowd:loudcrowd-storefrontcollections-api
+  name: LoudCrowd Storefront Collections API
+  description: The StorefrontCollections API from LoudCrowd — 1 operation(s) for storefrontcollections.
+  humanURL: https://docs.loudcrowd.com/reference/list_program_orders
+  baseURL: https://api.loudcrowd.com
+  tags:
+  - StorefrontCollections
+  properties:
+  - type: OpenAPI
+    url: openapi/loudcrowd-storefrontcollections-api-openapi.yml
+  - type: Documentation
+    url: https://docs.loudcrowd.com/reference/list_program_orders
+  - type: Documentation
+    url: https://docs.loudcrowd.com/reference/submit_order_event
+  - type: Documentation
+    url: >-
+      https://docs.loudcrowd.com/docs/install-the-loudcrowd-storefront-page-in-your-custom-website
+- aid: loudcrowd:loudcrowd-storefrontfeeditems-api
+  name: LoudCrowd Storefront Feed Items API
+  description: The StorefrontFeedItems API from LoudCrowd — 1 operation(s) for storefrontfeeditems.
+  humanURL: https://docs.loudcrowd.com/reference/list_program_orders
+  baseURL: https://api.loudcrowd.com
+  tags:
+  - StorefrontFeedItems
+  properties:
+  - type: OpenAPI
+    url: openapi/loudcrowd-storefrontfeeditems-api-openapi.yml
+  - type: Documentation
+    url: https://docs.loudcrowd.com/reference/list_program_orders
+  - type: Documentation
+    url: https://docs.loudcrowd.com/reference/submit_order_event
+  - type: Documentation
+    url: >-
+      https://docs.loudcrowd.com/docs/install-the-loudcrowd-storefront-page-in-your-custom-website
+- aid: loudcrowd:loudcrowd-storefrontmediadetails-api
+  name: LoudCrowd Storefront Media Details API
+  description: >-
+    The StorefrontMediaDetails API from LoudCrowd — 1 operation(s) for storefrontmediadetails.
+  humanURL: https://docs.loudcrowd.com/reference/list_program_orders
+  baseURL: https://api.loudcrowd.com
+  tags:
+  - StorefrontMediaDetails
+  properties:
+  - type: OpenAPI
+    url: openapi/loudcrowd-storefrontmediadetails-api-openapi.yml
+  - type: Documentation
+    url: https://docs.loudcrowd.com/reference/list_program_orders
+  - type: Documentation
+    url: https://docs.loudcrowd.com/reference/submit_order_event
+  - type: Documentation
+    url: >-
+      https://docs.loudcrowd.com/docs/install-the-loudcrowd-storefront-page-in-your-custom-website
+- aid: loudcrowd:loudcrowd-storefrontproductdetails-api
+  name: LoudCrowd Storefront Product Details API
+  description: >-
+    The StorefrontProductDetails API from LoudCrowd — 1 operation(s) for storefrontproductdetails.
+  humanURL: https://docs.loudcrowd.com/reference/list_program_orders
+  baseURL: https://api.loudcrowd.com
+  tags:
+  - StorefrontProductDetails
+  properties:
+  - type: OpenAPI
+    url: openapi/loudcrowd-storefrontproductdetails-api-openapi.yml
+  - type: Documentation
+    url: https://docs.loudcrowd.com/reference/list_program_orders
+  - type: Documentation
+    url: https://docs.loudcrowd.com/reference/submit_order_event
+  - type: Documentation
+    url: >-
+      https://docs.loudcrowd.com/docs/install-the-loudcrowd-storefront-page-in-your-custom-website
 common:
 - type: DomainSecurity
   url: security/loudcrowd-domain-security.yml
