@@ -11,6 +11,18 @@ description: >-
   stacks, and a Creator Storefronts data API used in place of the hosted storefront web components.
   A browser SDK loaded from pub.loudcrowd.com renders storefront and influencer-list app blocks and
   performs first-party affiliate attribution on Shopify, Salesforce Commerce Cloud and custom sites.
+deliveryModel:
+  model: saas
+  open_source: false
+  commercial: true
+  callable_host: true
+  label: Hosted service · you call their endpoint
+  confidence: high
+  source:
+  - openapi
+  - pricing
+  generated: '2026-08-28'
+  method: derived
 image: https://loudcrowd.com/og-default.png
 url: https://raw.githubusercontent.com/api-evangelist/loudcrowd/refs/heads/main/apis.yml
 x-type: company
