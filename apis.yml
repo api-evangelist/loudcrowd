@@ -34,6 +34,19 @@ tags:
 - Creator Marketing
 - Influencer Marketing
 - Affiliate Marketing
+- E-Commerce
+- Creator Commerce
+- Attribution
+- Social Commerce
+- Shopify
+- User Generated Content
+- Commissions
+- Retail
+- Marketing
+tags_raw:
+- Creator Marketing
+- Influencer Marketing
+- Affiliate Marketing
 - Ecommerce
 - Creator Commerce
 - Attribution
@@ -124,6 +137,8 @@ apis:
   humanURL: https://docs.loudcrowd.com/reference/list_program_orders
   baseURL: https://api.loudcrowd.com
   tags:
+  - Storefront Collections
+  tags_raw:
   - StorefrontCollections
   properties:
   - type: OpenAPI
