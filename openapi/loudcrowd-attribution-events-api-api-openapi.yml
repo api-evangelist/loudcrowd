@@ -1,0 +1,266 @@
+openapi: 3.2.0
+info:
+  title: LoudCrowd Attribution Events API
+  version: 0.0.0
+  description: 'LoudCrowd public API definitions, including the account-scoped Brand API and Attribution Events API.
+
+    '
+  license:
+    name: MIT
+    url: https://opensource.org/licenses/MIT
+servers:
+- url: https://store-api.loudcrowd.com/api
+  description: LoudCrowd Creator Storefronts API
+- url: https://api.loudcrowd.com
+  description: LoudCrowd Attribution Events API
+security:
+- bearerAuth: []
+tags:
+- name: Attribution Events API
+paths:
+  /event/ecomm:
+    post:
+      summary: Submit Order Event
+      description: Submit order create, update, and cancel event payloads to LoudCrowd for attribution and commission calculation.
+      operationId: submit_order_event
+      tags:
+      - Attribution Events API
+      servers:
+      - url: https://api.loudcrowd.com
+      security: []
+      parameters:
+      - in: header
+        name: X-LC-SHOP-ID
+        description: The Shop ID of the ecommerce integration that owns the order, shown on the LoudCrowd Integrations page. This is not an Account ID or API token.
+        required: true
+        schema:
+          type: string
+      - in: header
+        name: X-Signature
+        description: Lowercase hexadecimal HMAC-SHA256 of the exact raw request-body bytes, keyed with an API token that grants the **Write orders** scope. Do not include a sha256= prefix.
+        required: true
+        schema:
+          type: string
+      - in: header
+        name: X-LC-TOPIC
+        description: Specifies the event type. ORDER_CANCEL requires the complete order payload, a non-null platform_cancelled_at, and a platform_updated_at later than the preceding event.
+        required: true
+        schema:
+          type: string
+          enum:
+          - ORDER_CREATE
+          - ORDER_UPDATE
+          - ORDER_CANCEL
+      - in: header
+        name: Content-Type
+        description: Content type of the request
+        required: true
+        schema:
+          type: string
+          default: application/json
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+              - platform_order_id
+              - platform_ordered_at
+              - amount
+              - tax
+              - shipping
+              - currency_code
+              - line_items
+              properties:
+                platform_order_id:
+                  type: string
+                  description: Your internal identifier for the order
+                platform_customer_id:
+                  type: string
+                  description: Your internal identifier for the customer who placed the order
+                email:
+                  type: string
+                  format: email
+                  description: Customer's email address, when available.
+                phone:
+                  type: string
+                  description: Customer's phone number, when available.
+                platform_ordered_at:
+                  type: string
+                  format: date-time
+                  description: The date and time when the order was placed, in ISO 8601 format (UTC)
+                platform_updated_at:
+                  type: string
+                  format: date-time
+                  description: The date and time when the order was last updated, in ISO 8601 format (UTC). For ORDER_CANCEL, send a value later than the preceding event.
+                platform_cancelled_at:
+                  type:
+                  - string
+                  - 'null'
+                  format: date-time
+                  description: The date and time when the order was cancelled, in ISO 8601 format (UTC). This must be non-null for ORDER_CANCEL; set it to null when the order is not cancelled.
+                amount:
+                  type: string
+                  description: Total amount of the order as a decimal string, including tax, shipping, and discounts. Excludes refunds/returns.
+                  example: '200.00'
+                tax:
+                  type: string
+                  description: Total tax amount for the order as a decimal string
+                  example: '12.00'
+                shipping:
+                  type: string
+                  description: Total shipping cost for the order as a decimal string
+                  example: '10.00'
+                currency_code:
+                  type: string
+                  description: Currency code of the order, in ISO 4217 format
+                discounts:
+                  type: array
+                  description: Array of discount objects applied to the order
+                  items:
+                    type: object
+                    properties:
+                      code:
+                        type: string
+                        description: Discount code used
+                      type:
+                        type: string
+                        enum:
+                        - DISCOUNT_CODE
+                        description: Type of discount application
+                      value_type:
+                        type: string
+                        enum:
+                        - FIXED_AMOUNT
+                        - PERCENTAGE
+                        description: Type of discount value
+                      value:
+                        type: string
+                        description: Value of the discount as a decimal string
+                        example: '15'
+                    required:
+                    - code
+                    - type
+                    - value_type
+                    - value
+                line_items:
+                  type: array
+                  minItems: 1
+                  description: Array of line item objects representing products purchased in the order
+                  items:
+                    type: object
+                    required:
+                    - line_item_id
+                    - sku
+                    - amount
+                    - tax
+                    - quantity
+                    properties:
+                      line_item_id:
+                        type: string
+                        description: Platform-specific identifier for the line item
+                      sku:
+                        type: string
+                        description: SKU of the product purchased
+                      variant_sku:
+                        type: string
+                        description: SKU of the product variant purchased
+                      amount:
+                        type: string
+                        description: Total amount paid for the line item as a decimal string, including taxes and deductions
+                        example: '100.00'
+                      tax:
+                        type: string
+                        description: Total tax amount for the line item as a decimal string
+                        example: '6.00'
+                      quantity:
+                        type: string
+                        description: Number of units purchased for this line item as a numeric string
+                        example: '2'
+                refund_line_items:
+                  type: array
+                  description: Array of refund line item objects representing returned or refunded products
+                  items:
+                    type: object
+                    required:
+                    - refund_line_item_id
+                    - line_item_id
+                    - platform_refunded_at
+                    - sku
+                    - amount
+                    - tax
+                    - quantity
+                    properties:
+                      refund_line_item_id:
+                        type: string
+                        description: Identifier unique within the ecommerce integration and stable for this original line_item_id. Reuse it with cumulative current values on later updates, and use a different ID for a different original line_item_id.
+                      line_item_id:
+                        type: string
+                        description: Identifier of the original line item that was refunded
+                      platform_refunded_at:
+                        type: string
+                        format: date-time
+                        description: Date and time when the line item was refunded, in ISO 8601 format (UTC)
+                      sku:
+                        type: string
+                        description: SKU of the product refunded
+                      variant_sku:
+                        type: string
+                        description: SKU of the product variant refunded
+                      amount:
+                        type: string
+                        description: Total cumulative amount refunded for the line item as a decimal string, including tax refunds
+                        example: '100.00'
+                      tax:
+                        type: string
+                        description: Total cumulative tax refunded for the line item as a decimal string
+                        example: '6.00'
+                      quantity:
+                        type: string
+                        description: Total cumulative number of units refunded for this line item as a numeric string
+                        example: '1'
+                lc_anon_id:
+                  type:
+                  - string
+                  - 'null'
+                  format: uuid
+                  description: Value of lc_anon_user_id from browser local storage. This is optional if LoudCrowd's order confirmation script is installed.
+      responses:
+        '200':
+          description: The event was authenticated and accepted for asynchronous processing. This response does not confirm persistence, attribution, or commission calculation.
+          content:
+            text/html:
+              schema:
+                type: string
+                enum:
+                - success
+              example: success
+        '400':
+          description: Bad request - Invalid data provided
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                    example: Invalid request data
+        '401':
+          description: Authentication failed. The response body is empty.
+        '500':
+          description: Internal processing failed. The response body is empty.
+components:
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+      description: 'Authorization header using the Bearer scheme. Example: "Authorization: Bearer {token}"'
+    accountKeyAuth:
+      type: apiKey
+      in: header
+      name: X-LC-Account-Key
+      description: API token created in LoudCrowd.
+      x-default: YOUR_API_TOKEN
+x-readme:
+  explorer-enabled: false

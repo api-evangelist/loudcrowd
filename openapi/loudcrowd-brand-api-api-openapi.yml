@@ -1,0 +1,251 @@
+openapi: 3.2.0
+info:
+  title: LoudCrowd Brand API
+  version: 0.0.0
+  description: 'LoudCrowd public API definitions, including the account-scoped Brand API and Attribution Events API.
+
+    '
+  license:
+    name: MIT
+    url: https://opensource.org/licenses/MIT
+servers:
+- url: https://store-api.loudcrowd.com/api
+  description: LoudCrowd Creator Storefronts API
+- url: https://api.loudcrowd.com
+  description: LoudCrowd Attribution Events API
+security:
+- bearerAuth: []
+tags:
+- name: Brand API
+paths:
+  /api/v1/brand/{account_id}/programs/{program_id}/orders:
+    get:
+      summary: List program orders
+      description: Retrieves orders attributed to members of a LoudCrowd program. Each result identifies the program member and includes attribution methods, financial values, and platform timestamps. Orders are returned in the order LoudCrowd received them, with the most recent first. Requires the **Read orders** and **Read programs** scopes.
+      operationId: list_program_orders
+      tags:
+      - Brand API
+      servers:
+      - url: https://api.loudcrowd.com
+      security:
+      - accountKeyAuth: []
+      parameters:
+      - in: path
+        name: account_id
+        description: Your Account ID, shown under API identifiers in the LoudCrowd app.
+        required: true
+        example: YOUR_ACCOUNT_ID
+        schema:
+          type: string
+      - in: path
+        name: program_id
+        description: Your Program ID, shown under API identifiers in the LoudCrowd app.
+        required: true
+        example: YOUR_PROGRAM_ID
+        schema:
+          type: string
+      - in: query
+        name: limit
+        description: Maximum number of orders to return.
+        required: false
+        schema:
+          type: integer
+          minimum: 1
+          maximum: 100
+          default: 50
+      - in: query
+        name: cursor
+        description: Opaque next-page cursor returned by the preceding response.
+        required: false
+        schema:
+          type: string
+      responses:
+        '200':
+          description: A page of program orders.
+          headers:
+            Link:
+              description: Next-page URL with rel="next". Absent on the final page.
+              schema:
+                type: string
+          content:
+            application/json:
+              schema:
+                type: object
+                required:
+                - data
+                - nextCursor
+                properties:
+                  data:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/brandOrder'
+                  nextCursor:
+                    type:
+                    - string
+                    - 'null'
+                    description: Opaque cursor for the next page, or null on the final page.
+              example:
+                data:
+                - orderId: ORDER-123
+                  ambassadorLcId: Y3VzdG9tZXI6MTIz
+                  attributionTypes:
+                  - LANDED
+                  commissionAmount: '10.00'
+                  amount: '100.00'
+                  tax: '8.00'
+                  shipping: '5.00'
+                  refundAmount: '0.00'
+                  refundTax: '0.00'
+                  currency: USD
+                  cancelledAt: null
+                  orderedAt: '2026-06-01T12:00:00Z'
+                  lastUpdatedAt: '2026-06-02T08:30:00Z'
+                nextCursor: null
+        '400':
+          description: The limit or cursor is invalid.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/brandBadRequest'
+              example:
+                error: Bad Request
+                message: invalid cursor
+        '401':
+          description: The API token is missing or invalid, lacks a required scope, or cannot access the requested account or program.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/brandUnauthorized'
+        '500':
+          description: An unexpected server error occurred.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/brandInternalError'
+components:
+  schemas:
+    brandOrder:
+      type: object
+      description: An attributed order. If the order is cancelled before commission is paid, `amount`, `tax`, `shipping`, `refundAmount`, `refundTax`, and `commissionAmount` are all `"0.00"`. If the order is cancelled after commission is paid, those values remain as recorded when the commission was paid.
+      required:
+      - orderId
+      - ambassadorLcId
+      - attributionTypes
+      - commissionAmount
+      - amount
+      - tax
+      - shipping
+      - refundAmount
+      - refundTax
+      - currency
+      - cancelledAt
+      - orderedAt
+      - lastUpdatedAt
+      properties:
+        orderId:
+          type: string
+          description: Order identifier from the connected ecommerce platform.
+        ambassadorLcId:
+          type: string
+          description: LoudCrowd ID for the selected program member.
+        attributionTypes:
+          type: array
+          description: Distinct attribution methods recorded for the order. May contain more than one value.
+          items:
+            type: string
+            enum:
+            - LANDED
+            - AFFILIATE_CODE
+            - LINK_DISCOUNT
+            - EXTERNAL
+            - MANUAL
+        commissionAmount:
+          type:
+          - string
+          - 'null'
+          description: Commission currently recorded for the selected program member, as an exact decimal string in currency. It is null only when commission has not been calculated yet.
+          example: '10.00'
+        amount:
+          type: string
+          description: Order total before refunds, as an exact decimal string in currency. Includes tax and shipping.
+          example: '100.00'
+        tax:
+          type: string
+          description: Tax before refunds, as an exact decimal string in currency. Included in amount.
+          example: '8.00'
+        shipping:
+          type: string
+          description: Shipping as an exact decimal string in currency. Included in amount.
+          example: '5.00'
+        refundAmount:
+          type: string
+          description: Processed refund total as an exact decimal string in currency. Includes refundTax.
+          example: '0.00'
+        refundTax:
+          type: string
+          description: Tax included in refundAmount, as an exact decimal string in currency.
+          example: '0.00'
+        currency:
+          type: string
+          description: ISO 4217 currency code for every monetary field in this order.
+          pattern: ^[A-Z]{3}$
+          example: USD
+        cancelledAt:
+          type:
+          - string
+          - 'null'
+          format: date-time
+          description: UTC cancellation timestamp from the ecommerce platform. It is null when unavailable.
+        orderedAt:
+          type: string
+          format: date-time
+          description: UTC timestamp when the order was placed on the ecommerce platform.
+        lastUpdatedAt:
+          type:
+          - string
+          - 'null'
+          format: date-time
+          description: UTC timestamp of the latest ecommerce-platform update. It is null when unavailable.
+    brandUnauthorized:
+      type: object
+      required:
+      - error
+      properties:
+        error:
+          type: string
+          enum:
+          - unauthorized
+    brandInternalError:
+      type: object
+      required:
+      - error
+      properties:
+        error:
+          type: string
+          enum:
+          - internal error
+    brandBadRequest:
+      type: object
+      required:
+      - error
+      - message
+      properties:
+        error:
+          type: string
+          enum:
+          - Bad Request
+        message:
+          type: string
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+      description: 'Authorization header using the Bearer scheme. Example: "Authorization: Bearer {token}"'
+    accountKeyAuth:
+      type: apiKey
+      in: header
+      name: X-LC-Account-Key
+      description: API token created in LoudCrowd.
+      x-default: YOUR_API_TOKEN
+x-readme:
+  explorer-enabled: false
