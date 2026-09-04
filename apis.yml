@@ -23,6 +23,21 @@ deliveryModel:
   - pricing
   generated: '2026-08-28'
   method: derived
+accessModel:
+  pricing: freemium
+  onboarding: self-serve
+  trial: false
+  try_now: true
+  public: false
+  label: Freemium · Self-serve signup
+  confidence: high
+  source:
+  - plans
+  - authentication
+  - rate-limits
+  - security
+  generated: '2026-09-03'
+  method: derived
 image: https://loudcrowd.com/og-default.png
 url: https://raw.githubusercontent.com/api-evangelist/loudcrowd/refs/heads/main/apis.yml
 x-type: company
@@ -274,7 +289,7 @@ common:
   url: overlays/loudcrowd-creator-storefronts-overlay.yaml
 - type: WellKnown-Probe
   url: well-known/loudcrowd-well-known.yml
-- type: MCPServer-Candidate
+- type: X-MCPServerCandidate
   url: mcp/loudcrowd-mcp.yml
 x-enrichment:
   date: '2026-08-25'
