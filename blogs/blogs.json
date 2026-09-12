@@ -2,24 +2,36 @@
   "repo": "loudcrowd",
   "feeds": [
     {
+      "source": "https://loudcrowd.com/blog/",
+      "feed_url": "https://loudcrowd.com/blog/",
+      "title": "",
+      "saved": 0,
+      "method": "none"
+    },
+    {
       "source": "https://help.loudcrowd.com/en/",
       "feed_url": "https://help.loudcrowd.com/en/feed.xml",
       "title": "",
-      "saved": 1,
-      "method": "discovered",
-      "nature": "undetermined",
-      "nature_basis": null
+      "saved": 0,
+      "method": "discovered"
     },
     {
-      "source": "https://loudcrowd.com/blog/",
+      "source": "https://help.loudcrowd.com/en/feed.xml",
+      "feed_url": "https://help.loudcrowd.com/en/feed.xml",
+      "title": "",
+      "saved": 0,
+      "method": "feed"
+    },
+    {
+      "source": "https://loudcrowd.com/feed.xml",
       "feed_url": "https://loudcrowd.com/feed.xml",
       "title": "",
       "saved": 0,
-      "method": "discovered"
+      "method": "feed"
     }
   ],
-  "post_count": 1,
-  "fetched": "2026-08-30T22:33:40Z",
+  "post_count": 75,
+  "fetched": "2026-09-06T19:17:18Z",
   "feed_nature": "undetermined",
   "feed_nature_basis": null,
   "feed_nature_note": "Whether these posts are the vendor publishing or its support community, decided on the URL path grammar of the saved posts -- not the hostname, which carries both on Khoros, and not author diversity, which flags large vendor blogs as forums. 'undetermined' means undetermined."
