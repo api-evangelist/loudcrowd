@@ -146,25 +146,6 @@ apis:
   - type: Documentation
     url: >-
       https://docs.loudcrowd.com/docs/install-the-loudcrowd-storefront-page-in-your-custom-website
-- aid: loudcrowd:loudcrowd-storefrontcollections-api
-  name: LoudCrowd Storefront Collections API
-  description: The StorefrontCollections API from LoudCrowd — 1 operation(s) for storefrontcollections.
-  humanURL: https://docs.loudcrowd.com/reference/list_program_orders
-  baseURL: https://api.loudcrowd.com
-  tags:
-  - Storefront Collections
-  tags_raw:
-  - StorefrontCollections
-  properties:
-  - type: OpenAPI
-    url: openapi/loudcrowd-storefrontcollections-api-openapi.yml
-  - type: Documentation
-    url: https://docs.loudcrowd.com/reference/list_program_orders
-  - type: Documentation
-    url: https://docs.loudcrowd.com/reference/submit_order_event
-  - type: Documentation
-    url: >-
-      https://docs.loudcrowd.com/docs/install-the-loudcrowd-storefront-page-in-your-custom-website
 - aid: loudcrowd:loudcrowd-storefrontfeeditems-api
   name: LoudCrowd Storefront Feed Items API
   description: The StorefrontFeedItems API from LoudCrowd — 1 operation(s) for storefrontfeeditems.
@@ -211,6 +192,24 @@ apis:
   properties:
   - type: OpenAPI
     url: openapi/loudcrowd-storefrontproductdetails-api-openapi.yml
+  - type: Documentation
+    url: https://docs.loudcrowd.com/reference/list_program_orders
+  - type: Documentation
+    url: https://docs.loudcrowd.com/reference/submit_order_event
+  - type: Documentation
+    url: >-
+      https://docs.loudcrowd.com/docs/install-the-loudcrowd-storefront-page-in-your-custom-website
+- aid: loudcrowd:loudcrowd-storefront-collections-api
+  name: LoudCrowd Storefront Collections API
+  description: >-
+    The Storefront Collections API from LoudCrowd — 1 operation(s) for storefront collections.
+  humanURL: https://docs.loudcrowd.com/reference/list_program_orders
+  baseURL: https://api.loudcrowd.com
+  tags:
+  - Storefront Collections
+  properties:
+  - type: OpenAPI
+    url: openapi/loudcrowd-storefront-collections-api-openapi.yml
   - type: Documentation
     url: https://docs.loudcrowd.com/reference/list_program_orders
   - type: Documentation
