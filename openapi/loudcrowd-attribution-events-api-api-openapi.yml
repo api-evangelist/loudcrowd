@@ -2,9 +2,7 @@ openapi: 3.2.0
 info:
   title: LoudCrowd Attribution Events API
   version: 0.0.0
-  description: 'LoudCrowd public API definitions, including the account-scoped Brand API and Attribution Events API.
-
-    '
+  description: LoudCrowd public API definitions, including the account-scoped Brand API and Attribution Events API.
   license:
     name: MIT
     url: https://opensource.org/licenses/MIT

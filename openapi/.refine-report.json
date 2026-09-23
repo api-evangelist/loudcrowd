@@ -1,0 +1,55 @@
+{
+  "provider": "loudcrowd",
+  "sources": [
+    "_original/loudcrowd-openapi-original.json"
+  ],
+  "outputs": [
+    "loudcrowd-attribution-events-api-api-openapi.yml",
+    "loudcrowd-brand-api-api-openapi.yml",
+    "loudcrowd-product-data-api-openapi.yml",
+    "loudcrowd-storefrontambassador-api-openapi.yml",
+    "loudcrowd-storefrontcollections-api-openapi.yml",
+    "loudcrowd-storefrontfeeditems-api-openapi.yml",
+    "loudcrowd-storefrontmediadetails-api-openapi.yml",
+    "loudcrowd-storefrontproductdetails-api-openapi.yml"
+  ],
+  "archived": [
+    "deleted 1 superseded output(s) from the previous generation"
+  ],
+  "errors": [],
+  "warnings": [],
+  "notes": [
+    "3 archived document(s) dropped as subsets of other archived documents",
+    "sourced from openapi/_original/ (1 archived document(s)); previously refined output at the top level was skipped rather than re-split",
+    "loudcrowd-openapi-original.json: upgraded openapi 3.0.0 -> OpenAPI 3.2.0",
+    "loudcrowd-openapi-original.json: tagged paths GET /StorefrontAmbassador -> StorefrontAmbassador",
+    "loudcrowd-openapi-original.json: tagged paths GET /StorefrontCollections -> StorefrontCollections",
+    "loudcrowd-openapi-original.json: tagged paths GET /StorefrontFeedItems -> StorefrontFeedItems",
+    "loudcrowd-openapi-original.json: tagged paths GET /StorefrontMediaDetails -> StorefrontMediaDetails",
+    "loudcrowd-openapi-original.json: tagged paths GET /StorefrontProductDetails -> StorefrontProductDetails",
+    "loudcrowd-openapi-original.json: tagged paths POST /product-data -> Product Data",
+    "loudcrowd-openapi-original.json: declared missing tag: Attribution Events API",
+    "loudcrowd-openapi-original.json: declared missing tag: Brand API",
+    "loudcrowd-openapi-original.json: declared missing tag: Product Data",
+    "loudcrowd-openapi-original.json: declared missing tag: StorefrontAmbassador",
+    "loudcrowd-openapi-original.json: declared missing tag: StorefrontCollections",
+    "loudcrowd-openapi-original.json: declared missing tag: StorefrontFeedItems",
+    "loudcrowd-openapi-original.json: declared missing tag: StorefrontMediaDetails",
+    "loudcrowd-openapi-original.json: declared missing tag: StorefrontProductDetails",
+    "superseded outputs removed: loudcrowd-storefront-collections-api-openapi.yml",
+    "apis.yml register: written (+1 apis, 8 total)"
+  ],
+  "skipped": [
+    "_original/loudcrowd-openapi.yml: archived document superseded by a larger archived document",
+    "_original/loudcrowd-creator-storefronts-openapi.yml: archived document superseded by a larger archived document",
+    "_original/loudcrowd-creator-storefronts-openapi-original.json: archived document superseded by a larger archived document",
+    "loudcrowd-attribution-events-api-api-openapi.yml: previously refined output, superseded by openapi/_original/",
+    "loudcrowd-brand-api-api-openapi.yml: previously refined output, superseded by openapi/_original/",
+    "loudcrowd-product-data-api-openapi.yml: previously refined output, superseded by openapi/_original/",
+    "loudcrowd-storefront-collections-api-openapi.yml: previously refined output, superseded by openapi/_original/",
+    "loudcrowd-storefrontambassador-api-openapi.yml: previously refined output, superseded by openapi/_original/",
+    "loudcrowd-storefrontfeeditems-api-openapi.yml: previously refined output, superseded by openapi/_original/",
+    "loudcrowd-storefrontmediadetails-api-openapi.yml: previously refined output, superseded by openapi/_original/",
+    "loudcrowd-storefrontproductdetails-api-openapi.yml: previously refined output, superseded by openapi/_original/"
+  ]
+}

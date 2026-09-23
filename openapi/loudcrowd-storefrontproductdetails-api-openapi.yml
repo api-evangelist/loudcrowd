@@ -1,15 +1,14 @@
 openapi: 3.2.0
 info:
-  title: Loudcrowd Storefront Product Details API
+  title: LoudCrowd Storefront Product Details API
   version: 0.0.0
+  description: LoudCrowd public API definitions, including the account-scoped Brand API and Attribution Events API.
   license:
     name: MIT
     url: https://opensource.org/licenses/MIT
-  description: 'Operations tagged StorefrontProductDetails across 2 of this provider''s published API definitions: loudcrowd-creator-storefronts-openapi.yml, loudcrowd-openapi.yml. Each path carries the servers of the definition it was published in.'
 servers:
 - url: https://store-api.loudcrowd.com/api
-  description: The base url for the LoudCrowd Creator Storefronts API.
-  variables: {}
+  description: LoudCrowd Creator Storefronts API
 - url: https://api.loudcrowd.com
   description: LoudCrowd Attribution Events API
 security:
@@ -181,10 +180,8 @@ paths:
           $ref: '#/components/responses/404'
       tags:
       - StorefrontProductDetails
-    servers:
-    - url: https://store-api.loudcrowd.com/api
-      description: The base url for the LoudCrowd Creator Storefronts API.
-      variables: {}
+      operationId: getStorefrontProductDetails
+      x-operation-id-source: derived
 components:
   schemas:
     productPrices:
@@ -270,6 +267,21 @@ components:
       type:
       - object
       - 'null'
+    selectedOptionItem:
+      properties:
+        name:
+          description: The name of the selected option.
+          type:
+          - string
+          - 'null'
+          example: Color
+        value:
+          description: The value of the selected option.
+          type:
+          - string
+          - 'null'
+          example: Red
+      type: object
     priceCurrencyCode:
       enum:
       - USD
@@ -458,21 +470,6 @@ components:
       - 'null'
       description: The currency code of the product prices.
       example: USD
-    selectedOptionItem:
-      properties:
-        name:
-          description: The name of the selected option.
-          type:
-          - string
-          - 'null'
-          example: Color
-        value:
-          description: The value of the selected option.
-          type:
-          - string
-          - 'null'
-          example: Red
-      type: object
     mediaItem:
       type: object
       properties:
@@ -549,19 +546,6 @@ components:
           description: The date the media item was posted in Coordinated Universal Time (UTC).
           example: '2021-07-01T00:00:00Z'
   responses:
-    '400':
-      description: Request is missing or has a bad parameter.
-      content:
-        application/json:
-          schema:
-            type: object
-            properties:
-              code:
-                type: integer
-                example: 400
-              message:
-                type: string
-                example: Bad Request
     '404':
       description: The requested resource doesn't exist.
       content:
@@ -575,6 +559,19 @@ components:
               message:
                 type: string
                 example: Not Found
+    '400':
+      description: Request is missing or has a bad parameter.
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              code:
+                type: integer
+                example: 400
+              message:
+                type: string
+                example: Bad Request
   securitySchemes:
     bearerAuth:
       type: http
@@ -586,8 +583,5 @@ components:
       name: X-LC-Account-Key
       description: API token created in LoudCrowd.
       x-default: YOUR_API_TOKEN
-x-refined-from:
-- loudcrowd-creator-storefronts-openapi.yml
-- loudcrowd-openapi.yml
 x-readme:
   explorer-enabled: false

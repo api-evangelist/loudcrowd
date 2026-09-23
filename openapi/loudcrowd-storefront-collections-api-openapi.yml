@@ -1,21 +1,20 @@
 openapi: 3.2.0
 info:
-  title: Loudcrowd Storefront Collections API
+  title: LoudCrowd Storefront Collections API
   version: 0.0.0
+  description: LoudCrowd public API definitions, including the account-scoped Brand API and Attribution Events API.
   license:
     name: MIT
     url: https://opensource.org/licenses/MIT
-  description: 'Operations tagged StorefrontCollections across 2 of this provider''s published API definitions: loudcrowd-creator-storefronts-openapi.yml, loudcrowd-openapi.yml. Each path carries the servers of the definition it was published in.'
 servers:
 - url: https://store-api.loudcrowd.com/api
-  description: The base url for the LoudCrowd Creator Storefronts API.
-  variables: {}
+  description: LoudCrowd Creator Storefronts API
 - url: https://api.loudcrowd.com
   description: LoudCrowd Attribution Events API
 security:
 - bearerAuth: []
 tags:
-- name: StorefrontCollections
+- name: Storefront Collections
 paths:
   /StorefrontCollections:
     get:
@@ -106,11 +105,9 @@ paths:
         '404':
           $ref: '#/components/responses/404'
       tags:
-      - StorefrontCollections
-    servers:
-    - url: https://store-api.loudcrowd.com/api
-      description: The base url for the LoudCrowd Creator Storefronts API.
-      variables: {}
+      - Storefront Collections
+      operationId: getStorefrontCollections
+      x-operation-id-source: derived
 components:
   responses:
     '400':
@@ -150,8 +147,5 @@ components:
       name: X-LC-Account-Key
       description: API token created in LoudCrowd.
       x-default: YOUR_API_TOKEN
-x-refined-from:
-- loudcrowd-creator-storefronts-openapi.yml
-- loudcrowd-openapi.yml
 x-readme:
   explorer-enabled: false

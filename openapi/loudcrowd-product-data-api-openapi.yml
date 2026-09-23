@@ -2,9 +2,7 @@ openapi: 3.2.0
 info:
   title: LoudCrowd Product Data API
   version: 0.0.0
-  description: 'LoudCrowd public API definitions, including the account-scoped Brand API and Attribution Events API.
-
-    '
+  description: LoudCrowd public API definitions, including the account-scoped Brand API and Attribution Events API.
   license:
     name: MIT
     url: https://opensource.org/licenses/MIT
@@ -89,6 +87,121 @@ paths:
       - Product Data
 components:
   schemas:
+    productVariantIngestRecord:
+      type: object
+      required:
+      - variant_sku
+      properties:
+        variant_sku:
+          type: string
+          description: Variant SKU (acts as external key)
+        price:
+          type:
+          - number
+          - 'null'
+          description: Variant price
+        sale_price:
+          type:
+          - number
+          - 'null'
+          description: Variant sale price
+        product_url:
+          type:
+          - string
+          - 'null'
+          description: Variant PDP URL
+        selected_options:
+          type:
+          - array
+          - 'null'
+          description: Key/value option selections like Size/Color
+          items:
+            $ref: '#/components/schemas/selectedOptionItem'
+          maxItems: 100
+    sendProductDataRequest:
+      type: object
+      required:
+      - products
+      properties:
+        products:
+          type: array
+          description: Batch of product records to upsert or delete.
+          minItems: 1
+          maxItems: 1000
+          items:
+            $ref: '#/components/schemas/productIngestRecord'
+    productIngestRecord:
+      type: object
+      description: Product payload aligned with file-based ingestion formats. Use nulls for clearing optional values.
+      required:
+      - platform_product_id
+      - title
+      properties:
+        platform_product_id:
+          type: string
+          description: Unique product identifier from the eCommerce platform
+        handle:
+          type: string
+          description: Product handle or slug
+        title:
+          type: string
+          description: Product title
+        brand:
+          type:
+          - string
+          - 'null'
+          description: Brand name
+        image_src:
+          type:
+          - string
+          - 'null'
+          description: Primary product image URL
+        product_url:
+          type:
+          - string
+          - 'null'
+          description: Product PDP URL
+        active:
+          type: boolean
+          description: Whether product is active/available
+        in_stock:
+          type:
+          - boolean
+          - 'null'
+          description: Inventory availability flag
+        price_currency_code:
+          $ref: '#/components/schemas/priceCurrencyCode'
+        prices:
+          $ref: '#/components/schemas/productPrices'
+        promotional_code:
+          type:
+          - string
+          - 'null'
+          description: Applied sitewide promo code, if any
+        collections:
+          type:
+          - array
+          - 'null'
+          description: Optional list of collection identifiers the product belongs to
+          items:
+            type: string
+          maxItems: 250
+        tags:
+          type:
+          - array
+          - 'null'
+          description: Optional list of product tags
+          items:
+            type: string
+          maxItems: 250
+        variants:
+          type:
+          - array
+          - 'null'
+          description: Optional list of product variants
+          items:
+            $ref: '#/components/schemas/productVariantIngestRecord'
+          maxItems: 250
     productPrices:
       properties:
         discountedPriceRanges:
@@ -172,49 +285,21 @@ components:
       type:
       - object
       - 'null'
-    sendProductDataRequest:
-      type: object
-      required:
-      - products
+    selectedOptionItem:
       properties:
-        products:
-          type: array
-          description: Batch of product records to upsert or delete.
-          minItems: 1
-          maxItems: 1000
-          items:
-            $ref: '#/components/schemas/productIngestRecord'
-    productVariantIngestRecord:
-      type: object
-      required:
-      - variant_sku
-      properties:
-        variant_sku:
-          type: string
-          description: Variant SKU (acts as external key)
-        price:
-          type:
-          - number
-          - 'null'
-          description: Variant price
-        sale_price:
-          type:
-          - number
-          - 'null'
-          description: Variant sale price
-        product_url:
+        name:
+          description: The name of the selected option.
           type:
           - string
           - 'null'
-          description: Variant PDP URL
-        selected_options:
+          example: Color
+        value:
+          description: The value of the selected option.
           type:
-          - array
+          - string
           - 'null'
-          description: Key/value option selections like Size/Color
-          items:
-            $ref: '#/components/schemas/selectedOptionItem'
-          maxItems: 100
+          example: Red
+      type: object
     priceCurrencyCode:
       enum:
       - USD
@@ -403,163 +488,7 @@ components:
       - 'null'
       description: The currency code of the product prices.
       example: USD
-    selectedOptionItem:
-      properties:
-        name:
-          description: The name of the selected option.
-          type:
-          - string
-          - 'null'
-          example: Color
-        value:
-          description: The value of the selected option.
-          type:
-          - string
-          - 'null'
-          example: Red
-      type: object
-    productIngestRecord:
-      type: object
-      description: Product payload aligned with file-based ingestion formats. Use nulls for clearing optional values.
-      required:
-      - platform_product_id
-      - title
-      properties:
-        platform_product_id:
-          type: string
-          description: Unique product identifier from the eCommerce platform
-        handle:
-          type: string
-          description: Product handle or slug
-        title:
-          type: string
-          description: Product title
-        brand:
-          type:
-          - string
-          - 'null'
-          description: Brand name
-        image_src:
-          type:
-          - string
-          - 'null'
-          description: Primary product image URL
-        product_url:
-          type:
-          - string
-          - 'null'
-          description: Product PDP URL
-        active:
-          type: boolean
-          description: Whether product is active/available
-        in_stock:
-          type:
-          - boolean
-          - 'null'
-          description: Inventory availability flag
-        price_currency_code:
-          $ref: '#/components/schemas/priceCurrencyCode'
-        prices:
-          $ref: '#/components/schemas/productPrices'
-        promotional_code:
-          type:
-          - string
-          - 'null'
-          description: Applied sitewide promo code, if any
-        collections:
-          type:
-          - array
-          - 'null'
-          description: Optional list of collection identifiers the product belongs to
-          items:
-            type: string
-          maxItems: 250
-        tags:
-          type:
-          - array
-          - 'null'
-          description: Optional list of product tags
-          items:
-            type: string
-          maxItems: 250
-        variants:
-          type:
-          - array
-          - 'null'
-          description: Optional list of product variants
-          items:
-            $ref: '#/components/schemas/productVariantIngestRecord'
-          maxItems: 250
   responses:
-    '429':
-      description: You hit the rate limit for this account. All endpoints share the same rate limit for an account.
-      headers:
-        X-RateLimit-Limit:
-          schema:
-            type: integer
-          description: Total requests allowed in the current window
-        X-RateLimit-Remaining:
-          schema:
-            type: integer
-          description: Requests remaining in the current window
-        X-RateLimit-Reset:
-          schema:
-            type: integer
-          description: Unix epoch seconds when the current window resets
-        Retry-After:
-          schema:
-            type: integer
-          description: Seconds until the next request may be made
-      content:
-        application/json:
-          schema:
-            type: object
-            properties:
-              code:
-                type: integer
-                example: 429
-              message:
-                type: string
-                example: Rate Limit Exceeded
-    '400':
-      description: Request is missing or has a bad parameter.
-      content:
-        application/json:
-          schema:
-            type: object
-            properties:
-              code:
-                type: integer
-                example: 400
-              message:
-                type: string
-                example: Bad Request
-    '500':
-      description: Something is wrong on LoudCrowd's end.
-      content:
-        application/json:
-          schema:
-            type: object
-            properties:
-              code:
-                type: integer
-                example: 500
-              message:
-                type: string
-                example: Server Error
-    '401':
-      description: Key is valid, but the account does not have permissions to perform this action.
-      content:
-        application/json:
-          schema:
-            type: object
-            properties:
-              code:
-                type: integer
-                example: 401
-              message:
-                type: string
-                example: Not Authorized
     '422':
       description: Validation failed for one or more product records.
       content:
@@ -599,6 +528,75 @@ components:
                   - index
                   - code
                   - message
+    '429':
+      description: You hit the rate limit for this account. All endpoints share the same rate limit for an account.
+      headers:
+        X-RateLimit-Limit:
+          schema:
+            type: integer
+          description: Total requests allowed in the current window
+        X-RateLimit-Remaining:
+          schema:
+            type: integer
+          description: Requests remaining in the current window
+        X-RateLimit-Reset:
+          schema:
+            type: integer
+          description: Unix epoch seconds when the current window resets
+        Retry-After:
+          schema:
+            type: integer
+          description: Seconds until the next request may be made
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              code:
+                type: integer
+                example: 429
+              message:
+                type: string
+                example: Rate Limit Exceeded
+    '500':
+      description: Something is wrong on LoudCrowd's end.
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              code:
+                type: integer
+                example: 500
+              message:
+                type: string
+                example: Server Error
+    '400':
+      description: Request is missing or has a bad parameter.
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              code:
+                type: integer
+                example: 400
+              message:
+                type: string
+                example: Bad Request
+    '401':
+      description: Key is valid, but the account does not have permissions to perform this action.
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              code:
+                type: integer
+                example: 401
+              message:
+                type: string
+                example: Not Authorized
   securitySchemes:
     bearerAuth:
       type: http
