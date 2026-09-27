@@ -122,15 +122,6 @@ paths:
                 $ref: '#/components/schemas/brandInternalError'
 components:
   schemas:
-    brandUnauthorized:
-      type: object
-      required:
-      - error
-      properties:
-        error:
-          type: string
-          enum:
-          - unauthorized
     brandInternalError:
       type: object
       required:
@@ -234,6 +225,15 @@ components:
           - Bad Request
         message:
           type: string
+    brandUnauthorized:
+      type: object
+      required:
+      - error
+      properties:
+        error:
+          type: string
+          enum:
+          - unauthorized
   securitySchemes:
     bearerAuth:
       type: http

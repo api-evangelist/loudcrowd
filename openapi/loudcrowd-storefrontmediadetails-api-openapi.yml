@@ -165,89 +165,6 @@ paths:
       x-operation-id-source: derived
 components:
   schemas:
-    productPrices:
-      properties:
-        discountedPriceRanges:
-          description: List of the discounted price ranges for the product.
-          items:
-            properties:
-              discount:
-                properties:
-                  id:
-                    type: string
-                type: object
-              range:
-                properties:
-                  max:
-                    type: number
-                  min:
-                    type: number
-                type: object
-            type: object
-          type: array
-          maxItems: 10
-        discountedPrices:
-          description: List of the discounted prices for the product.
-          items:
-            properties:
-              discount:
-                properties:
-                  id:
-                    type: string
-                type: object
-              price:
-                type: number
-            type: object
-          type: array
-          maxItems: 10
-        price:
-          description: The price of the product.
-          type:
-          - number
-          - 'null'
-        priceRange:
-          description: The price range of the product.
-          properties:
-            max:
-              type: number
-            min:
-              type: number
-          type:
-          - object
-          - 'null'
-        promotionalPrice:
-          description: If there is a site wide promotion applied to the product data, the promotional price of the product.
-          type:
-          - number
-          - 'null'
-        promotionalPriceRange:
-          description: If there is a site wide promotion applied to the product data, the promotional price range of the product.
-          properties:
-            max:
-              type: number
-            min:
-              type: number
-          type:
-          - object
-          - 'null'
-        salePrice:
-          description: The sale price of the product.
-          type:
-          - number
-          - 'null'
-        salePriceRange:
-          description: The sale price range of the product.
-          properties:
-            max:
-              type: number
-            min:
-              type: number
-          type:
-          - object
-          - 'null'
-      type:
-      - object
-      - 'null'
     taggedProductItem:
       type: object
       properties:
@@ -552,6 +469,89 @@ components:
       - 'null'
       description: The currency code of the product prices.
       example: USD
+    productPrices:
+      properties:
+        discountedPriceRanges:
+          description: List of the discounted price ranges for the product.
+          items:
+            properties:
+              discount:
+                properties:
+                  id:
+                    type: string
+                type: object
+              range:
+                properties:
+                  max:
+                    type: number
+                  min:
+                    type: number
+                type: object
+            type: object
+          type: array
+          maxItems: 10
+        discountedPrices:
+          description: List of the discounted prices for the product.
+          items:
+            properties:
+              discount:
+                properties:
+                  id:
+                    type: string
+                type: object
+              price:
+                type: number
+            type: object
+          type: array
+          maxItems: 10
+        price:
+          description: The price of the product.
+          type:
+          - number
+          - 'null'
+        priceRange:
+          description: The price range of the product.
+          properties:
+            max:
+              type: number
+            min:
+              type: number
+          type:
+          - object
+          - 'null'
+        promotionalPrice:
+          description: If there is a site wide promotion applied to the product data, the promotional price of the product.
+          type:
+          - number
+          - 'null'
+        promotionalPriceRange:
+          description: If there is a site wide promotion applied to the product data, the promotional price range of the product.
+          properties:
+            max:
+              type: number
+            min:
+              type: number
+          type:
+          - object
+          - 'null'
+        salePrice:
+          description: The sale price of the product.
+          type:
+          - number
+          - 'null'
+        salePriceRange:
+          description: The sale price range of the product.
+          properties:
+            max:
+              type: number
+            min:
+              type: number
+          type:
+          - object
+          - 'null'
+      type:
+      - object
+      - 'null'
   responses:
     '404':
       description: The requested resource doesn't exist.
