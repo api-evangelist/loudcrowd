@@ -605,7 +605,49 @@ paths:
       operationId: getStorefrontFeedItems
       x-operation-id-source: derived
 components:
+  responses:
+    '400':
+      description: Request is missing or has a bad parameter.
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              code:
+                type: integer
+                example: 400
+              message:
+                type: string
+                example: Bad Request
+    '404':
+      description: The requested resource doesn't exist.
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              code:
+                type: integer
+                example: 404
+              message:
+                type: string
+                example: Not Found
   schemas:
+    selectedOptionItem:
+      properties:
+        name:
+          description: The name of the selected option.
+          type:
+          - string
+          - 'null'
+          example: Color
+        value:
+          description: The value of the selected option.
+          type:
+          - string
+          - 'null'
+          example: Red
+      type: object
     mediaItem:
       type: object
       properties:
@@ -681,48 +723,6 @@ components:
           - 'null'
           description: The date the media item was posted in Coordinated Universal Time (UTC).
           example: '2021-07-01T00:00:00Z'
-    selectedOptionItem:
-      properties:
-        name:
-          description: The name of the selected option.
-          type:
-          - string
-          - 'null'
-          example: Color
-        value:
-          description: The value of the selected option.
-          type:
-          - string
-          - 'null'
-          example: Red
-      type: object
-  responses:
-    '404':
-      description: The requested resource doesn't exist.
-      content:
-        application/json:
-          schema:
-            type: object
-            properties:
-              code:
-                type: integer
-                example: 404
-              message:
-                type: string
-                example: Not Found
-    '400':
-      description: Request is missing or has a bad parameter.
-      content:
-        application/json:
-          schema:
-            type: object
-            properties:
-              code:
-                type: integer
-                example: 400
-              message:
-                type: string
-                example: Bad Request
   securitySchemes:
     bearerAuth:
       type: http

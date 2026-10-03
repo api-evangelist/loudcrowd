@@ -122,6 +122,27 @@ paths:
                 $ref: '#/components/schemas/brandInternalError'
 components:
   schemas:
+    brandBadRequest:
+      type: object
+      required:
+      - error
+      - message
+      properties:
+        error:
+          type: string
+          enum:
+          - Bad Request
+        message:
+          type: string
+    brandUnauthorized:
+      type: object
+      required:
+      - error
+      properties:
+        error:
+          type: string
+          enum:
+          - unauthorized
     brandInternalError:
       type: object
       required:
@@ -213,27 +234,6 @@ components:
           - 'null'
           format: date-time
           description: UTC timestamp of the latest ecommerce-platform update. It is null when unavailable.
-    brandBadRequest:
-      type: object
-      required:
-      - error
-      - message
-      properties:
-        error:
-          type: string
-          enum:
-          - Bad Request
-        message:
-          type: string
-    brandUnauthorized:
-      type: object
-      required:
-      - error
-      properties:
-        error:
-          type: string
-          enum:
-          - unauthorized
   securitySchemes:
     bearerAuth:
       type: http

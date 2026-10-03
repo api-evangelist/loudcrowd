@@ -86,214 +86,79 @@ paths:
       tags:
       - Product Data
 components:
-  responses:
-    '422':
-      description: Validation failed for one or more product records.
-      content:
-        application/json:
-          schema:
-            type: object
-            properties:
-              code:
-                type: integer
-                example: 422
-              message:
-                type: string
-                example: Unprocessable Entity
-              recordErrors:
-                type: array
-                description: Per-record validation errors
-                items:
-                  type: object
-                  properties:
-                    index:
-                      type: integer
-                      description: Zero-based index of the product in the payload
-                      example: 0
-                    field:
-                      type: string
-                      description: JSON pointer or field path
-                      example: products[0].platform_product_id
-                    code:
-                      type: string
-                      description: Machine-readable error code
-                      example: REQUIRED
-                    message:
-                      type: string
-                      description: Human readable error
-                      example: platform_product_id is required
-                  required:
-                  - index
-                  - code
-                  - message
-    '429':
-      description: You hit the rate limit for this account. All endpoints share the same rate limit for an account.
-      headers:
-        X-RateLimit-Limit:
-          schema:
-            type: integer
-          description: Total requests allowed in the current window
-        X-RateLimit-Remaining:
-          schema:
-            type: integer
-          description: Requests remaining in the current window
-        X-RateLimit-Reset:
-          schema:
-            type: integer
-          description: Unix epoch seconds when the current window resets
-        Retry-After:
-          schema:
-            type: integer
-          description: Seconds until the next request may be made
-      content:
-        application/json:
-          schema:
-            type: object
-            properties:
-              code:
-                type: integer
-                example: 429
-              message:
-                type: string
-                example: Rate Limit Exceeded
-    '500':
-      description: Something is wrong on LoudCrowd's end.
-      content:
-        application/json:
-          schema:
-            type: object
-            properties:
-              code:
-                type: integer
-                example: 500
-              message:
-                type: string
-                example: Server Error
-    '400':
-      description: Request is missing or has a bad parameter.
-      content:
-        application/json:
-          schema:
-            type: object
-            properties:
-              code:
-                type: integer
-                example: 400
-              message:
-                type: string
-                example: Bad Request
-    '401':
-      description: Key is valid, but the account does not have permissions to perform this action.
-      content:
-        application/json:
-          schema:
-            type: object
-            properties:
-              code:
-                type: integer
-                example: 401
-              message:
-                type: string
-                example: Not Authorized
   schemas:
-    selectedOptionItem:
-      properties:
-        name:
-          description: The name of the selected option.
-          type:
-          - string
-          - 'null'
-          example: Color
-        value:
-          description: The value of the selected option.
-          type:
-          - string
-          - 'null'
-          example: Red
+    productIngestRecord:
       type: object
-    productPrices:
+      description: Product payload aligned with file-based ingestion formats. Use nulls for clearing optional values.
+      required:
+      - platform_product_id
+      - title
       properties:
-        discountedPriceRanges:
-          description: List of the discounted price ranges for the product.
+        platform_product_id:
+          type: string
+          description: Unique product identifier from the eCommerce platform
+        handle:
+          type: string
+          description: Product handle or slug
+        title:
+          type: string
+          description: Product title
+        brand:
+          type:
+          - string
+          - 'null'
+          description: Brand name
+        image_src:
+          type:
+          - string
+          - 'null'
+          description: Primary product image URL
+        product_url:
+          type:
+          - string
+          - 'null'
+          description: Product PDP URL
+        active:
+          type: boolean
+          description: Whether product is active/available
+        in_stock:
+          type:
+          - boolean
+          - 'null'
+          description: Inventory availability flag
+        price_currency_code:
+          $ref: '#/components/schemas/priceCurrencyCode'
+        prices:
+          $ref: '#/components/schemas/productPrices'
+        promotional_code:
+          type:
+          - string
+          - 'null'
+          description: Applied sitewide promo code, if any
+        collections:
+          type:
+          - array
+          - 'null'
+          description: Optional list of collection identifiers the product belongs to
           items:
-            properties:
-              discount:
-                properties:
-                  id:
-                    type: string
-                type: object
-              range:
-                properties:
-                  max:
-                    type: number
-                  min:
-                    type: number
-                type: object
-            type: object
-          type: array
-          maxItems: 10
-        discountedPrices:
-          description: List of the discounted prices for the product.
+            type: string
+          maxItems: 250
+        tags:
+          type:
+          - array
+          - 'null'
+          description: Optional list of product tags
           items:
-            properties:
-              discount:
-                properties:
-                  id:
-                    type: string
-                type: object
-              price:
-                type: number
-            type: object
-          type: array
-          maxItems: 10
-        price:
-          description: The price of the product.
+            type: string
+          maxItems: 250
+        variants:
           type:
-          - number
+          - array
           - 'null'
-        priceRange:
-          description: The price range of the product.
-          properties:
-            max:
-              type: number
-            min:
-              type: number
-          type:
-          - object
-          - 'null'
-        promotionalPrice:
-          description: If there is a site wide promotion applied to the product data, the promotional price of the product.
-          type:
-          - number
-          - 'null'
-        promotionalPriceRange:
-          description: If there is a site wide promotion applied to the product data, the promotional price range of the product.
-          properties:
-            max:
-              type: number
-            min:
-              type: number
-          type:
-          - object
-          - 'null'
-        salePrice:
-          description: The sale price of the product.
-          type:
-          - number
-          - 'null'
-        salePriceRange:
-          description: The sale price range of the product.
-          properties:
-            max:
-              type: number
-            min:
-              type: number
-          type:
-          - object
-          - 'null'
-      type:
-      - object
-      - 'null'
+          description: Optional list of product variants
+          items:
+            $ref: '#/components/schemas/productVariantIngestRecord'
+          maxItems: 250
     priceCurrencyCode:
       enum:
       - USD
@@ -482,90 +347,21 @@ components:
       - 'null'
       description: The currency code of the product prices.
       example: USD
-    sendProductDataRequest:
-      type: object
-      required:
-      - products
+    selectedOptionItem:
       properties:
-        products:
-          type: array
-          description: Batch of product records to upsert or delete.
-          minItems: 1
-          maxItems: 1000
-          items:
-            $ref: '#/components/schemas/productIngestRecord'
-    productIngestRecord:
+        name:
+          description: The name of the selected option.
+          type:
+          - string
+          - 'null'
+          example: Color
+        value:
+          description: The value of the selected option.
+          type:
+          - string
+          - 'null'
+          example: Red
       type: object
-      description: Product payload aligned with file-based ingestion formats. Use nulls for clearing optional values.
-      required:
-      - platform_product_id
-      - title
-      properties:
-        platform_product_id:
-          type: string
-          description: Unique product identifier from the eCommerce platform
-        handle:
-          type: string
-          description: Product handle or slug
-        title:
-          type: string
-          description: Product title
-        brand:
-          type:
-          - string
-          - 'null'
-          description: Brand name
-        image_src:
-          type:
-          - string
-          - 'null'
-          description: Primary product image URL
-        product_url:
-          type:
-          - string
-          - 'null'
-          description: Product PDP URL
-        active:
-          type: boolean
-          description: Whether product is active/available
-        in_stock:
-          type:
-          - boolean
-          - 'null'
-          description: Inventory availability flag
-        price_currency_code:
-          $ref: '#/components/schemas/priceCurrencyCode'
-        prices:
-          $ref: '#/components/schemas/productPrices'
-        promotional_code:
-          type:
-          - string
-          - 'null'
-          description: Applied sitewide promo code, if any
-        collections:
-          type:
-          - array
-          - 'null'
-          description: Optional list of collection identifiers the product belongs to
-          items:
-            type: string
-          maxItems: 250
-        tags:
-          type:
-          - array
-          - 'null'
-          description: Optional list of product tags
-          items:
-            type: string
-          maxItems: 250
-        variants:
-          type:
-          - array
-          - 'null'
-          description: Optional list of product variants
-          items:
-            $ref: '#/components/schemas/productVariantIngestRecord'
-          maxItems: 250
     productVariantIngestRecord:
       type: object
       required:
@@ -597,6 +393,210 @@ components:
           items:
             $ref: '#/components/schemas/selectedOptionItem'
           maxItems: 100
+    productPrices:
+      properties:
+        discountedPriceRanges:
+          description: List of the discounted price ranges for the product.
+          items:
+            properties:
+              discount:
+                properties:
+                  id:
+                    type: string
+                type: object
+              range:
+                properties:
+                  max:
+                    type: number
+                  min:
+                    type: number
+                type: object
+            type: object
+          type: array
+          maxItems: 10
+        discountedPrices:
+          description: List of the discounted prices for the product.
+          items:
+            properties:
+              discount:
+                properties:
+                  id:
+                    type: string
+                type: object
+              price:
+                type: number
+            type: object
+          type: array
+          maxItems: 10
+        price:
+          description: The price of the product.
+          type:
+          - number
+          - 'null'
+        priceRange:
+          description: The price range of the product.
+          properties:
+            max:
+              type: number
+            min:
+              type: number
+          type:
+          - object
+          - 'null'
+        promotionalPrice:
+          description: If there is a site wide promotion applied to the product data, the promotional price of the product.
+          type:
+          - number
+          - 'null'
+        promotionalPriceRange:
+          description: If there is a site wide promotion applied to the product data, the promotional price range of the product.
+          properties:
+            max:
+              type: number
+            min:
+              type: number
+          type:
+          - object
+          - 'null'
+        salePrice:
+          description: The sale price of the product.
+          type:
+          - number
+          - 'null'
+        salePriceRange:
+          description: The sale price range of the product.
+          properties:
+            max:
+              type: number
+            min:
+              type: number
+          type:
+          - object
+          - 'null'
+      type:
+      - object
+      - 'null'
+    sendProductDataRequest:
+      type: object
+      required:
+      - products
+      properties:
+        products:
+          type: array
+          description: Batch of product records to upsert or delete.
+          minItems: 1
+          maxItems: 1000
+          items:
+            $ref: '#/components/schemas/productIngestRecord'
+  responses:
+    '500':
+      description: Something is wrong on LoudCrowd's end.
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              code:
+                type: integer
+                example: 500
+              message:
+                type: string
+                example: Server Error
+    '400':
+      description: Request is missing or has a bad parameter.
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              code:
+                type: integer
+                example: 400
+              message:
+                type: string
+                example: Bad Request
+    '401':
+      description: Key is valid, but the account does not have permissions to perform this action.
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              code:
+                type: integer
+                example: 401
+              message:
+                type: string
+                example: Not Authorized
+    '422':
+      description: Validation failed for one or more product records.
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              code:
+                type: integer
+                example: 422
+              message:
+                type: string
+                example: Unprocessable Entity
+              recordErrors:
+                type: array
+                description: Per-record validation errors
+                items:
+                  type: object
+                  properties:
+                    index:
+                      type: integer
+                      description: Zero-based index of the product in the payload
+                      example: 0
+                    field:
+                      type: string
+                      description: JSON pointer or field path
+                      example: products[0].platform_product_id
+                    code:
+                      type: string
+                      description: Machine-readable error code
+                      example: REQUIRED
+                    message:
+                      type: string
+                      description: Human readable error
+                      example: platform_product_id is required
+                  required:
+                  - index
+                  - code
+                  - message
+    '429':
+      description: You hit the rate limit for this account. All endpoints share the same rate limit for an account.
+      headers:
+        X-RateLimit-Limit:
+          schema:
+            type: integer
+          description: Total requests allowed in the current window
+        X-RateLimit-Remaining:
+          schema:
+            type: integer
+          description: Requests remaining in the current window
+        X-RateLimit-Reset:
+          schema:
+            type: integer
+          description: Unix epoch seconds when the current window resets
+        Retry-After:
+          schema:
+            type: integer
+          description: Seconds until the next request may be made
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              code:
+                type: integer
+                example: 429
+              message:
+                type: string
+                example: Rate Limit Exceeded
   securitySchemes:
     bearerAuth:
       type: http

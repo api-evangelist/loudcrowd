@@ -456,19 +456,6 @@ paths:
       x-operation-id-source: derived
 components:
   responses:
-    '404':
-      description: The requested resource doesn't exist.
-      content:
-        application/json:
-          schema:
-            type: object
-            properties:
-              code:
-                type: integer
-                example: 404
-              message:
-                type: string
-                example: Not Found
     '400':
       description: Request is missing or has a bad parameter.
       content:
@@ -482,6 +469,19 @@ components:
               message:
                 type: string
                 example: Bad Request
+    '404':
+      description: The requested resource doesn't exist.
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              code:
+                type: integer
+                example: 404
+              message:
+                type: string
+                example: Not Found
   securitySchemes:
     bearerAuth:
       type: http

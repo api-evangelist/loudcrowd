@@ -184,21 +184,6 @@ paths:
       x-operation-id-source: derived
 components:
   schemas:
-    selectedOptionItem:
-      properties:
-        name:
-          description: The name of the selected option.
-          type:
-          - string
-          - 'null'
-          example: Color
-        value:
-          description: The value of the selected option.
-          type:
-          - string
-          - 'null'
-          example: Red
-      type: object
     priceCurrencyCode:
       enum:
       - USD
@@ -387,81 +372,21 @@ components:
       - 'null'
       description: The currency code of the product prices.
       example: USD
-    mediaItem:
-      type: object
+    selectedOptionItem:
       properties:
-        caption:
-          description: The caption of the media item.
+        name:
+          description: The name of the selected option.
           type:
           - string
           - 'null'
-          example: Check out my new shoes!
-        children:
-          description: If the media item is a carousel, the items in the carousel.
-          items:
-            properties:
-              mediaType:
-                enum:
-                - IMAGE
-                - VIDEO
-                - CAROUSEL_ALBUM
-                type:
-                - string
-                - 'null'
-                description: The media type of the carousel child item.
-                example: VIDEO
-              mediaUrl:
-                type:
-                - string
-                - 'null'
-                description: The URL of the media item.
-                example: https://media.loudcrowd.com/18057689623487832.mp4
-            type: object
-          type:
-          - array
-          - 'null'
-          maxItems: 100
-        mediaType:
-          enum:
-          - IMAGE
-          - VIDEO
-          - CAROUSEL_ALBUM
+          example: Color
+        value:
+          description: The value of the selected option.
           type:
           - string
           - 'null'
-          description: The media type of the item.
-          example: VIDEO
-        mediaUrl:
-          type:
-          - string
-          - 'null'
-          description: The URL of the media item.
-          example: https://media.loudcrowd.com/18057689623487832.mp4
-        platform:
-          enum:
-          - INSTAGRAM
-          - TIKTOK
-          type:
-          - string
-          - 'null'
-          description: The social platform of the media item.
-          example: INSTAGRAM
-        postType:
-          enum:
-          - FEED
-          - STORY
-          - REELS
-          type:
-          - string
-          - 'null'
-          description: The type of post the media item is. This is dependent on the platform.
-          example: REELS
-        postedAt:
-          type:
-          - string
-          - 'null'
-          description: The date the media item was posted in Coordinated Universal Time (UTC).
-          example: '2021-07-01T00:00:00Z'
+          example: Red
+      type: object
     productPrices:
       properties:
         discountedPriceRanges:
@@ -545,20 +470,82 @@ components:
       type:
       - object
       - 'null'
-  responses:
-    '404':
-      description: The requested resource doesn't exist.
-      content:
-        application/json:
-          schema:
-            type: object
+    mediaItem:
+      type: object
+      properties:
+        caption:
+          description: The caption of the media item.
+          type:
+          - string
+          - 'null'
+          example: Check out my new shoes!
+        children:
+          description: If the media item is a carousel, the items in the carousel.
+          items:
             properties:
-              code:
-                type: integer
-                example: 404
-              message:
-                type: string
-                example: Not Found
+              mediaType:
+                enum:
+                - IMAGE
+                - VIDEO
+                - CAROUSEL_ALBUM
+                type:
+                - string
+                - 'null'
+                description: The media type of the carousel child item.
+                example: VIDEO
+              mediaUrl:
+                type:
+                - string
+                - 'null'
+                description: The URL of the media item.
+                example: https://media.loudcrowd.com/18057689623487832.mp4
+            type: object
+          type:
+          - array
+          - 'null'
+          maxItems: 100
+        mediaType:
+          enum:
+          - IMAGE
+          - VIDEO
+          - CAROUSEL_ALBUM
+          type:
+          - string
+          - 'null'
+          description: The media type of the item.
+          example: VIDEO
+        mediaUrl:
+          type:
+          - string
+          - 'null'
+          description: The URL of the media item.
+          example: https://media.loudcrowd.com/18057689623487832.mp4
+        platform:
+          enum:
+          - INSTAGRAM
+          - TIKTOK
+          type:
+          - string
+          - 'null'
+          description: The social platform of the media item.
+          example: INSTAGRAM
+        postType:
+          enum:
+          - FEED
+          - STORY
+          - REELS
+          type:
+          - string
+          - 'null'
+          description: The type of post the media item is. This is dependent on the platform.
+          example: REELS
+        postedAt:
+          type:
+          - string
+          - 'null'
+          description: The date the media item was posted in Coordinated Universal Time (UTC).
+          example: '2021-07-01T00:00:00Z'
+  responses:
     '400':
       description: Request is missing or has a bad parameter.
       content:
@@ -572,6 +559,19 @@ components:
               message:
                 type: string
                 example: Bad Request
+    '404':
+      description: The requested resource doesn't exist.
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              code:
+                type: integer
+                example: 404
+              message:
+                type: string
+                example: Not Found
   securitySchemes:
     bearerAuth:
       type: http
