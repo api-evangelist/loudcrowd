@@ -86,6 +86,115 @@ paths:
       tags:
       - Product Data
 components:
+  responses:
+    '400':
+      description: Request is missing or has a bad parameter.
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              code:
+                type: integer
+                example: 400
+              message:
+                type: string
+                example: Bad Request
+    '401':
+      description: Key is valid, but the account does not have permissions to perform this action.
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              code:
+                type: integer
+                example: 401
+              message:
+                type: string
+                example: Not Authorized
+    '422':
+      description: Validation failed for one or more product records.
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              code:
+                type: integer
+                example: 422
+              message:
+                type: string
+                example: Unprocessable Entity
+              recordErrors:
+                type: array
+                description: Per-record validation errors
+                items:
+                  type: object
+                  properties:
+                    index:
+                      type: integer
+                      description: Zero-based index of the product in the payload
+                      example: 0
+                    field:
+                      type: string
+                      description: JSON pointer or field path
+                      example: products[0].platform_product_id
+                    code:
+                      type: string
+                      description: Machine-readable error code
+                      example: REQUIRED
+                    message:
+                      type: string
+                      description: Human readable error
+                      example: platform_product_id is required
+                  required:
+                  - index
+                  - code
+                  - message
+    '429':
+      description: You hit the rate limit for this account. All endpoints share the same rate limit for an account.
+      headers:
+        X-RateLimit-Limit:
+          schema:
+            type: integer
+          description: Total requests allowed in the current window
+        X-RateLimit-Remaining:
+          schema:
+            type: integer
+          description: Requests remaining in the current window
+        X-RateLimit-Reset:
+          schema:
+            type: integer
+          description: Unix epoch seconds when the current window resets
+        Retry-After:
+          schema:
+            type: integer
+          description: Seconds until the next request may be made
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              code:
+                type: integer
+                example: 429
+              message:
+                type: string
+                example: Rate Limit Exceeded
+    '500':
+      description: Something is wrong on LoudCrowd's end.
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              code:
+                type: integer
+                example: 500
+              message:
+                type: string
+                example: Server Error
   schemas:
     productIngestRecord:
       type: object
@@ -159,6 +268,147 @@ components:
           items:
             $ref: '#/components/schemas/productVariantIngestRecord'
           maxItems: 250
+    productVariantIngestRecord:
+      type: object
+      required:
+      - variant_sku
+      properties:
+        variant_sku:
+          type: string
+          description: Variant SKU (acts as external key)
+        price:
+          type:
+          - number
+          - 'null'
+          description: Variant price
+        sale_price:
+          type:
+          - number
+          - 'null'
+          description: Variant sale price
+        product_url:
+          type:
+          - string
+          - 'null'
+          description: Variant PDP URL
+        selected_options:
+          type:
+          - array
+          - 'null'
+          description: Key/value option selections like Size/Color
+          items:
+            $ref: '#/components/schemas/selectedOptionItem'
+          maxItems: 100
+    selectedOptionItem:
+      properties:
+        name:
+          description: The name of the selected option.
+          type:
+          - string
+          - 'null'
+          example: Color
+        value:
+          description: The value of the selected option.
+          type:
+          - string
+          - 'null'
+          example: Red
+      type: object
+    productPrices:
+      properties:
+        discountedPriceRanges:
+          description: List of the discounted price ranges for the product.
+          items:
+            properties:
+              discount:
+                properties:
+                  id:
+                    type: string
+                type: object
+              range:
+                properties:
+                  max:
+                    type: number
+                  min:
+                    type: number
+                type: object
+            type: object
+          type: array
+          maxItems: 10
+        discountedPrices:
+          description: List of the discounted prices for the product.
+          items:
+            properties:
+              discount:
+                properties:
+                  id:
+                    type: string
+                type: object
+              price:
+                type: number
+            type: object
+          type: array
+          maxItems: 10
+        price:
+          description: The price of the product.
+          type:
+          - number
+          - 'null'
+        priceRange:
+          description: The price range of the product.
+          properties:
+            max:
+              type: number
+            min:
+              type: number
+          type:
+          - object
+          - 'null'
+        promotionalPrice:
+          description: If there is a site wide promotion applied to the product data, the promotional price of the product.
+          type:
+          - number
+          - 'null'
+        promotionalPriceRange:
+          description: If there is a site wide promotion applied to the product data, the promotional price range of the product.
+          properties:
+            max:
+              type: number
+            min:
+              type: number
+          type:
+          - object
+          - 'null'
+        salePrice:
+          description: The sale price of the product.
+          type:
+          - number
+          - 'null'
+        salePriceRange:
+          description: The sale price range of the product.
+          properties:
+            max:
+              type: number
+            min:
+              type: number
+          type:
+          - object
+          - 'null'
+      type:
+      - object
+      - 'null'
+    sendProductDataRequest:
+      type: object
+      required:
+      - products
+      properties:
+        products:
+          type: array
+          description: Batch of product records to upsert or delete.
+          minItems: 1
+          maxItems: 1000
+          items:
+            $ref: '#/components/schemas/productIngestRecord'
     priceCurrencyCode:
       enum:
       - USD
@@ -347,256 +597,6 @@ components:
       - 'null'
       description: The currency code of the product prices.
       example: USD
-    selectedOptionItem:
-      properties:
-        name:
-          description: The name of the selected option.
-          type:
-          - string
-          - 'null'
-          example: Color
-        value:
-          description: The value of the selected option.
-          type:
-          - string
-          - 'null'
-          example: Red
-      type: object
-    productVariantIngestRecord:
-      type: object
-      required:
-      - variant_sku
-      properties:
-        variant_sku:
-          type: string
-          description: Variant SKU (acts as external key)
-        price:
-          type:
-          - number
-          - 'null'
-          description: Variant price
-        sale_price:
-          type:
-          - number
-          - 'null'
-          description: Variant sale price
-        product_url:
-          type:
-          - string
-          - 'null'
-          description: Variant PDP URL
-        selected_options:
-          type:
-          - array
-          - 'null'
-          description: Key/value option selections like Size/Color
-          items:
-            $ref: '#/components/schemas/selectedOptionItem'
-          maxItems: 100
-    productPrices:
-      properties:
-        discountedPriceRanges:
-          description: List of the discounted price ranges for the product.
-          items:
-            properties:
-              discount:
-                properties:
-                  id:
-                    type: string
-                type: object
-              range:
-                properties:
-                  max:
-                    type: number
-                  min:
-                    type: number
-                type: object
-            type: object
-          type: array
-          maxItems: 10
-        discountedPrices:
-          description: List of the discounted prices for the product.
-          items:
-            properties:
-              discount:
-                properties:
-                  id:
-                    type: string
-                type: object
-              price:
-                type: number
-            type: object
-          type: array
-          maxItems: 10
-        price:
-          description: The price of the product.
-          type:
-          - number
-          - 'null'
-        priceRange:
-          description: The price range of the product.
-          properties:
-            max:
-              type: number
-            min:
-              type: number
-          type:
-          - object
-          - 'null'
-        promotionalPrice:
-          description: If there is a site wide promotion applied to the product data, the promotional price of the product.
-          type:
-          - number
-          - 'null'
-        promotionalPriceRange:
-          description: If there is a site wide promotion applied to the product data, the promotional price range of the product.
-          properties:
-            max:
-              type: number
-            min:
-              type: number
-          type:
-          - object
-          - 'null'
-        salePrice:
-          description: The sale price of the product.
-          type:
-          - number
-          - 'null'
-        salePriceRange:
-          description: The sale price range of the product.
-          properties:
-            max:
-              type: number
-            min:
-              type: number
-          type:
-          - object
-          - 'null'
-      type:
-      - object
-      - 'null'
-    sendProductDataRequest:
-      type: object
-      required:
-      - products
-      properties:
-        products:
-          type: array
-          description: Batch of product records to upsert or delete.
-          minItems: 1
-          maxItems: 1000
-          items:
-            $ref: '#/components/schemas/productIngestRecord'
-  responses:
-    '500':
-      description: Something is wrong on LoudCrowd's end.
-      content:
-        application/json:
-          schema:
-            type: object
-            properties:
-              code:
-                type: integer
-                example: 500
-              message:
-                type: string
-                example: Server Error
-    '400':
-      description: Request is missing or has a bad parameter.
-      content:
-        application/json:
-          schema:
-            type: object
-            properties:
-              code:
-                type: integer
-                example: 400
-              message:
-                type: string
-                example: Bad Request
-    '401':
-      description: Key is valid, but the account does not have permissions to perform this action.
-      content:
-        application/json:
-          schema:
-            type: object
-            properties:
-              code:
-                type: integer
-                example: 401
-              message:
-                type: string
-                example: Not Authorized
-    '422':
-      description: Validation failed for one or more product records.
-      content:
-        application/json:
-          schema:
-            type: object
-            properties:
-              code:
-                type: integer
-                example: 422
-              message:
-                type: string
-                example: Unprocessable Entity
-              recordErrors:
-                type: array
-                description: Per-record validation errors
-                items:
-                  type: object
-                  properties:
-                    index:
-                      type: integer
-                      description: Zero-based index of the product in the payload
-                      example: 0
-                    field:
-                      type: string
-                      description: JSON pointer or field path
-                      example: products[0].platform_product_id
-                    code:
-                      type: string
-                      description: Machine-readable error code
-                      example: REQUIRED
-                    message:
-                      type: string
-                      description: Human readable error
-                      example: platform_product_id is required
-                  required:
-                  - index
-                  - code
-                  - message
-    '429':
-      description: You hit the rate limit for this account. All endpoints share the same rate limit for an account.
-      headers:
-        X-RateLimit-Limit:
-          schema:
-            type: integer
-          description: Total requests allowed in the current window
-        X-RateLimit-Remaining:
-          schema:
-            type: integer
-          description: Requests remaining in the current window
-        X-RateLimit-Reset:
-          schema:
-            type: integer
-          description: Unix epoch seconds when the current window resets
-        Retry-After:
-          schema:
-            type: integer
-          description: Seconds until the next request may be made
-      content:
-        application/json:
-          schema:
-            type: object
-            properties:
-              code:
-                type: integer
-                example: 429
-              message:
-                type: string
-                example: Rate Limit Exceeded
   securitySchemes:
     bearerAuth:
       type: http

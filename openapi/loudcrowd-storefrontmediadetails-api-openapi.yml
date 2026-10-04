@@ -164,7 +164,233 @@ paths:
       operationId: getStorefrontMediaDetails
       x-operation-id-source: derived
 components:
+  responses:
+    '400':
+      description: Request is missing or has a bad parameter.
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              code:
+                type: integer
+                example: 400
+              message:
+                type: string
+                example: Bad Request
+    '404':
+      description: The requested resource doesn't exist.
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              code:
+                type: integer
+                example: 404
+              message:
+                type: string
+                example: Not Found
   schemas:
+    productPrices:
+      properties:
+        discountedPriceRanges:
+          description: List of the discounted price ranges for the product.
+          items:
+            properties:
+              discount:
+                properties:
+                  id:
+                    type: string
+                type: object
+              range:
+                properties:
+                  max:
+                    type: number
+                  min:
+                    type: number
+                type: object
+            type: object
+          type: array
+          maxItems: 10
+        discountedPrices:
+          description: List of the discounted prices for the product.
+          items:
+            properties:
+              discount:
+                properties:
+                  id:
+                    type: string
+                type: object
+              price:
+                type: number
+            type: object
+          type: array
+          maxItems: 10
+        price:
+          description: The price of the product.
+          type:
+          - number
+          - 'null'
+        priceRange:
+          description: The price range of the product.
+          properties:
+            max:
+              type: number
+            min:
+              type: number
+          type:
+          - object
+          - 'null'
+        promotionalPrice:
+          description: If there is a site wide promotion applied to the product data, the promotional price of the product.
+          type:
+          - number
+          - 'null'
+        promotionalPriceRange:
+          description: If there is a site wide promotion applied to the product data, the promotional price range of the product.
+          properties:
+            max:
+              type: number
+            min:
+              type: number
+          type:
+          - object
+          - 'null'
+        salePrice:
+          description: The sale price of the product.
+          type:
+          - number
+          - 'null'
+        salePriceRange:
+          description: The sale price range of the product.
+          properties:
+            max:
+              type: number
+            min:
+              type: number
+          type:
+          - object
+          - 'null'
+      type:
+      - object
+      - 'null'
+    selectedOptionItem:
+      properties:
+        name:
+          description: The name of the selected option.
+          type:
+          - string
+          - 'null'
+          example: Color
+        value:
+          description: The value of the selected option.
+          type:
+          - string
+          - 'null'
+          example: Red
+      type: object
+    taggedProductItem:
+      type: object
+      properties:
+        id:
+          description: The unique identifier of the product in the platform.
+          type: string
+          example: XYZDJSK1ABC
+        imageSrc:
+          description: The URL of the product image.
+          type:
+          - string
+          - 'null'
+          example: https://media.loudcrowd.com/17841409007688784.jpg
+        active:
+          description: Whether the product is active.
+          type: boolean
+          example: true
+        brand:
+          description: The brand of the product.
+          type:
+          - string
+          - 'null'
+          example: Nike
+        inStock:
+          description: Whether the product is in stock.
+          type: boolean
+          example: true
+        platformProductId:
+          description: The unique identifier of the product in the eCommerce platform.
+          type: string
+          example: XYZDJSK1ABC
+        priceCurrencyCode:
+          $ref: '#/components/schemas/priceCurrencyCode'
+        prices:
+          $ref: '#/components/schemas/productPrices'
+        productUrl:
+          description: The URL of the product details.
+          type:
+          - string
+          - 'null'
+        promotionalCode:
+          description: If there is a site wide promotion applied to the product data, the promotional code itself.
+          type:
+          - string
+          - 'null'
+        title:
+          description: The title of the product.
+          type:
+          - string
+          - 'null'
+        pickedProductVariant:
+          type: object
+          properties:
+            id:
+              description: The unique identifier of the variant in  LoudCrowd.
+              type: string
+              example: XYZDJSK1ABC
+            medias:
+              description: The media items associated with the product variant.
+              type: array
+              items:
+                type: object
+                properties:
+                  id:
+                    description: Id of the product media in LoudCrowd.
+                    type: string
+                    example: cHJvZHVjdF9tZWRpYTo5NjU4OTg2
+                  mediaType:
+                    enum:
+                    - IMAGE
+                    - VIDEO
+                    - CAROUSEL_ALBUM
+                    type:
+                    - string
+                    - 'null'
+                    description: The media type of the carousel child item.
+                    example: VIDEO
+                  mediaUrl:
+                    type:
+                    - string
+                    - 'null'
+                    description: The URL of the media item.
+                    example: https://media.loudcrowd.com/18057689623487832.mp4
+                  position:
+                    description: The position of the media in the carousel.
+                    type:
+                    - integer
+                    - 'null'
+                    example: 0
+              maxItems: 100
+            productUrl:
+              description: The URL of the variant the ambassador has picked.
+              type:
+              - string
+              - 'null'
+            selectedOptions:
+              description: The selected options of the product variant.
+              type: array
+              items:
+                $ref: '#/components/schemas/selectedOptionItem'
+              maxItems: 100
     priceCurrencyCode:
       enum:
       - USD
@@ -353,232 +579,6 @@ components:
       - 'null'
       description: The currency code of the product prices.
       example: USD
-    taggedProductItem:
-      type: object
-      properties:
-        id:
-          description: The unique identifier of the product in the platform.
-          type: string
-          example: XYZDJSK1ABC
-        imageSrc:
-          description: The URL of the product image.
-          type:
-          - string
-          - 'null'
-          example: https://media.loudcrowd.com/17841409007688784.jpg
-        active:
-          description: Whether the product is active.
-          type: boolean
-          example: true
-        brand:
-          description: The brand of the product.
-          type:
-          - string
-          - 'null'
-          example: Nike
-        inStock:
-          description: Whether the product is in stock.
-          type: boolean
-          example: true
-        platformProductId:
-          description: The unique identifier of the product in the eCommerce platform.
-          type: string
-          example: XYZDJSK1ABC
-        priceCurrencyCode:
-          $ref: '#/components/schemas/priceCurrencyCode'
-        prices:
-          $ref: '#/components/schemas/productPrices'
-        productUrl:
-          description: The URL of the product details.
-          type:
-          - string
-          - 'null'
-        promotionalCode:
-          description: If there is a site wide promotion applied to the product data, the promotional code itself.
-          type:
-          - string
-          - 'null'
-        title:
-          description: The title of the product.
-          type:
-          - string
-          - 'null'
-        pickedProductVariant:
-          type: object
-          properties:
-            id:
-              description: The unique identifier of the variant in  LoudCrowd.
-              type: string
-              example: XYZDJSK1ABC
-            medias:
-              description: The media items associated with the product variant.
-              type: array
-              items:
-                type: object
-                properties:
-                  id:
-                    description: Id of the product media in LoudCrowd.
-                    type: string
-                    example: cHJvZHVjdF9tZWRpYTo5NjU4OTg2
-                  mediaType:
-                    enum:
-                    - IMAGE
-                    - VIDEO
-                    - CAROUSEL_ALBUM
-                    type:
-                    - string
-                    - 'null'
-                    description: The media type of the carousel child item.
-                    example: VIDEO
-                  mediaUrl:
-                    type:
-                    - string
-                    - 'null'
-                    description: The URL of the media item.
-                    example: https://media.loudcrowd.com/18057689623487832.mp4
-                  position:
-                    description: The position of the media in the carousel.
-                    type:
-                    - integer
-                    - 'null'
-                    example: 0
-              maxItems: 100
-            productUrl:
-              description: The URL of the variant the ambassador has picked.
-              type:
-              - string
-              - 'null'
-            selectedOptions:
-              description: The selected options of the product variant.
-              type: array
-              items:
-                $ref: '#/components/schemas/selectedOptionItem'
-              maxItems: 100
-    selectedOptionItem:
-      properties:
-        name:
-          description: The name of the selected option.
-          type:
-          - string
-          - 'null'
-          example: Color
-        value:
-          description: The value of the selected option.
-          type:
-          - string
-          - 'null'
-          example: Red
-      type: object
-    productPrices:
-      properties:
-        discountedPriceRanges:
-          description: List of the discounted price ranges for the product.
-          items:
-            properties:
-              discount:
-                properties:
-                  id:
-                    type: string
-                type: object
-              range:
-                properties:
-                  max:
-                    type: number
-                  min:
-                    type: number
-                type: object
-            type: object
-          type: array
-          maxItems: 10
-        discountedPrices:
-          description: List of the discounted prices for the product.
-          items:
-            properties:
-              discount:
-                properties:
-                  id:
-                    type: string
-                type: object
-              price:
-                type: number
-            type: object
-          type: array
-          maxItems: 10
-        price:
-          description: The price of the product.
-          type:
-          - number
-          - 'null'
-        priceRange:
-          description: The price range of the product.
-          properties:
-            max:
-              type: number
-            min:
-              type: number
-          type:
-          - object
-          - 'null'
-        promotionalPrice:
-          description: If there is a site wide promotion applied to the product data, the promotional price of the product.
-          type:
-          - number
-          - 'null'
-        promotionalPriceRange:
-          description: If there is a site wide promotion applied to the product data, the promotional price range of the product.
-          properties:
-            max:
-              type: number
-            min:
-              type: number
-          type:
-          - object
-          - 'null'
-        salePrice:
-          description: The sale price of the product.
-          type:
-          - number
-          - 'null'
-        salePriceRange:
-          description: The sale price range of the product.
-          properties:
-            max:
-              type: number
-            min:
-              type: number
-          type:
-          - object
-          - 'null'
-      type:
-      - object
-      - 'null'
-  responses:
-    '400':
-      description: Request is missing or has a bad parameter.
-      content:
-        application/json:
-          schema:
-            type: object
-            properties:
-              code:
-                type: integer
-                example: 400
-              message:
-                type: string
-                example: Bad Request
-    '404':
-      description: The requested resource doesn't exist.
-      content:
-        application/json:
-          schema:
-            type: object
-            properties:
-              code:
-                type: integer
-                example: 404
-              message:
-                type: string
-                example: Not Found
   securitySchemes:
     bearerAuth:
       type: http

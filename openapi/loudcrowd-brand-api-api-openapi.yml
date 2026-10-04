@@ -122,36 +122,6 @@ paths:
                 $ref: '#/components/schemas/brandInternalError'
 components:
   schemas:
-    brandBadRequest:
-      type: object
-      required:
-      - error
-      - message
-      properties:
-        error:
-          type: string
-          enum:
-          - Bad Request
-        message:
-          type: string
-    brandUnauthorized:
-      type: object
-      required:
-      - error
-      properties:
-        error:
-          type: string
-          enum:
-          - unauthorized
-    brandInternalError:
-      type: object
-      required:
-      - error
-      properties:
-        error:
-          type: string
-          enum:
-          - internal error
     brandOrder:
       type: object
       description: An attributed order. If the order is cancelled before commission is paid, `amount`, `tax`, `shipping`, `refundAmount`, `refundTax`, and `commissionAmount` are all `"0.00"`. If the order is cancelled after commission is paid, those values remain as recorded when the commission was paid.
@@ -234,6 +204,36 @@ components:
           - 'null'
           format: date-time
           description: UTC timestamp of the latest ecommerce-platform update. It is null when unavailable.
+    brandUnauthorized:
+      type: object
+      required:
+      - error
+      properties:
+        error:
+          type: string
+          enum:
+          - unauthorized
+    brandBadRequest:
+      type: object
+      required:
+      - error
+      - message
+      properties:
+        error:
+          type: string
+          enum:
+          - Bad Request
+        message:
+          type: string
+    brandInternalError:
+      type: object
+      required:
+      - error
+      properties:
+        error:
+          type: string
+          enum:
+          - internal error
   securitySchemes:
     bearerAuth:
       type: http

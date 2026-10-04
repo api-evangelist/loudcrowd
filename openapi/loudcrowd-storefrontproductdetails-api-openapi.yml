@@ -183,7 +183,207 @@ paths:
       operationId: getStorefrontProductDetails
       x-operation-id-source: derived
 components:
+  responses:
+    '400':
+      description: Request is missing or has a bad parameter.
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              code:
+                type: integer
+                example: 400
+              message:
+                type: string
+                example: Bad Request
+    '404':
+      description: The requested resource doesn't exist.
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              code:
+                type: integer
+                example: 404
+              message:
+                type: string
+                example: Not Found
   schemas:
+    mediaItem:
+      type: object
+      properties:
+        caption:
+          description: The caption of the media item.
+          type:
+          - string
+          - 'null'
+          example: Check out my new shoes!
+        children:
+          description: If the media item is a carousel, the items in the carousel.
+          items:
+            properties:
+              mediaType:
+                enum:
+                - IMAGE
+                - VIDEO
+                - CAROUSEL_ALBUM
+                type:
+                - string
+                - 'null'
+                description: The media type of the carousel child item.
+                example: VIDEO
+              mediaUrl:
+                type:
+                - string
+                - 'null'
+                description: The URL of the media item.
+                example: https://media.loudcrowd.com/18057689623487832.mp4
+            type: object
+          type:
+          - array
+          - 'null'
+          maxItems: 100
+        mediaType:
+          enum:
+          - IMAGE
+          - VIDEO
+          - CAROUSEL_ALBUM
+          type:
+          - string
+          - 'null'
+          description: The media type of the item.
+          example: VIDEO
+        mediaUrl:
+          type:
+          - string
+          - 'null'
+          description: The URL of the media item.
+          example: https://media.loudcrowd.com/18057689623487832.mp4
+        platform:
+          enum:
+          - INSTAGRAM
+          - TIKTOK
+          type:
+          - string
+          - 'null'
+          description: The social platform of the media item.
+          example: INSTAGRAM
+        postType:
+          enum:
+          - FEED
+          - STORY
+          - REELS
+          type:
+          - string
+          - 'null'
+          description: The type of post the media item is. This is dependent on the platform.
+          example: REELS
+        postedAt:
+          type:
+          - string
+          - 'null'
+          description: The date the media item was posted in Coordinated Universal Time (UTC).
+          example: '2021-07-01T00:00:00Z'
+    productPrices:
+      properties:
+        discountedPriceRanges:
+          description: List of the discounted price ranges for the product.
+          items:
+            properties:
+              discount:
+                properties:
+                  id:
+                    type: string
+                type: object
+              range:
+                properties:
+                  max:
+                    type: number
+                  min:
+                    type: number
+                type: object
+            type: object
+          type: array
+          maxItems: 10
+        discountedPrices:
+          description: List of the discounted prices for the product.
+          items:
+            properties:
+              discount:
+                properties:
+                  id:
+                    type: string
+                type: object
+              price:
+                type: number
+            type: object
+          type: array
+          maxItems: 10
+        price:
+          description: The price of the product.
+          type:
+          - number
+          - 'null'
+        priceRange:
+          description: The price range of the product.
+          properties:
+            max:
+              type: number
+            min:
+              type: number
+          type:
+          - object
+          - 'null'
+        promotionalPrice:
+          description: If there is a site wide promotion applied to the product data, the promotional price of the product.
+          type:
+          - number
+          - 'null'
+        promotionalPriceRange:
+          description: If there is a site wide promotion applied to the product data, the promotional price range of the product.
+          properties:
+            max:
+              type: number
+            min:
+              type: number
+          type:
+          - object
+          - 'null'
+        salePrice:
+          description: The sale price of the product.
+          type:
+          - number
+          - 'null'
+        salePriceRange:
+          description: The sale price range of the product.
+          properties:
+            max:
+              type: number
+            min:
+              type: number
+          type:
+          - object
+          - 'null'
+      type:
+      - object
+      - 'null'
+    selectedOptionItem:
+      properties:
+        name:
+          description: The name of the selected option.
+          type:
+          - string
+          - 'null'
+          example: Color
+        value:
+          description: The value of the selected option.
+          type:
+          - string
+          - 'null'
+          example: Red
+      type: object
     priceCurrencyCode:
       enum:
       - USD
@@ -372,206 +572,6 @@ components:
       - 'null'
       description: The currency code of the product prices.
       example: USD
-    selectedOptionItem:
-      properties:
-        name:
-          description: The name of the selected option.
-          type:
-          - string
-          - 'null'
-          example: Color
-        value:
-          description: The value of the selected option.
-          type:
-          - string
-          - 'null'
-          example: Red
-      type: object
-    productPrices:
-      properties:
-        discountedPriceRanges:
-          description: List of the discounted price ranges for the product.
-          items:
-            properties:
-              discount:
-                properties:
-                  id:
-                    type: string
-                type: object
-              range:
-                properties:
-                  max:
-                    type: number
-                  min:
-                    type: number
-                type: object
-            type: object
-          type: array
-          maxItems: 10
-        discountedPrices:
-          description: List of the discounted prices for the product.
-          items:
-            properties:
-              discount:
-                properties:
-                  id:
-                    type: string
-                type: object
-              price:
-                type: number
-            type: object
-          type: array
-          maxItems: 10
-        price:
-          description: The price of the product.
-          type:
-          - number
-          - 'null'
-        priceRange:
-          description: The price range of the product.
-          properties:
-            max:
-              type: number
-            min:
-              type: number
-          type:
-          - object
-          - 'null'
-        promotionalPrice:
-          description: If there is a site wide promotion applied to the product data, the promotional price of the product.
-          type:
-          - number
-          - 'null'
-        promotionalPriceRange:
-          description: If there is a site wide promotion applied to the product data, the promotional price range of the product.
-          properties:
-            max:
-              type: number
-            min:
-              type: number
-          type:
-          - object
-          - 'null'
-        salePrice:
-          description: The sale price of the product.
-          type:
-          - number
-          - 'null'
-        salePriceRange:
-          description: The sale price range of the product.
-          properties:
-            max:
-              type: number
-            min:
-              type: number
-          type:
-          - object
-          - 'null'
-      type:
-      - object
-      - 'null'
-    mediaItem:
-      type: object
-      properties:
-        caption:
-          description: The caption of the media item.
-          type:
-          - string
-          - 'null'
-          example: Check out my new shoes!
-        children:
-          description: If the media item is a carousel, the items in the carousel.
-          items:
-            properties:
-              mediaType:
-                enum:
-                - IMAGE
-                - VIDEO
-                - CAROUSEL_ALBUM
-                type:
-                - string
-                - 'null'
-                description: The media type of the carousel child item.
-                example: VIDEO
-              mediaUrl:
-                type:
-                - string
-                - 'null'
-                description: The URL of the media item.
-                example: https://media.loudcrowd.com/18057689623487832.mp4
-            type: object
-          type:
-          - array
-          - 'null'
-          maxItems: 100
-        mediaType:
-          enum:
-          - IMAGE
-          - VIDEO
-          - CAROUSEL_ALBUM
-          type:
-          - string
-          - 'null'
-          description: The media type of the item.
-          example: VIDEO
-        mediaUrl:
-          type:
-          - string
-          - 'null'
-          description: The URL of the media item.
-          example: https://media.loudcrowd.com/18057689623487832.mp4
-        platform:
-          enum:
-          - INSTAGRAM
-          - TIKTOK
-          type:
-          - string
-          - 'null'
-          description: The social platform of the media item.
-          example: INSTAGRAM
-        postType:
-          enum:
-          - FEED
-          - STORY
-          - REELS
-          type:
-          - string
-          - 'null'
-          description: The type of post the media item is. This is dependent on the platform.
-          example: REELS
-        postedAt:
-          type:
-          - string
-          - 'null'
-          description: The date the media item was posted in Coordinated Universal Time (UTC).
-          example: '2021-07-01T00:00:00Z'
-  responses:
-    '400':
-      description: Request is missing or has a bad parameter.
-      content:
-        application/json:
-          schema:
-            type: object
-            properties:
-              code:
-                type: integer
-                example: 400
-              message:
-                type: string
-                example: Bad Request
-    '404':
-      description: The requested resource doesn't exist.
-      content:
-        application/json:
-          schema:
-            type: object
-            properties:
-              code:
-                type: integer
-                example: 404
-              message:
-                type: string
-                example: Not Found
   securitySchemes:
     bearerAuth:
       type: http
