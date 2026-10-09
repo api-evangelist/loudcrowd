@@ -89,3 +89,42 @@ api_entitlement:
     Brand API and Attribution Events API are integration surfaces of the paid platform; the
     Creator Storefronts API is an alternative to the hosted storefront components. Token creation
     is self-service inside the app (Settings → API Keys) once a customer is on a plan.
+x-canonical:
+  generated: '2026-10-08'
+  vocabulary: all/0-working/economics/plans-canonical.yml
+  models:
+  - free
+  - metered
+  - subscription
+  units: []
+  plans:
+  - name: ShopWith
+    access: other
+    model: metered
+    model_how: derived
+    units: []
+    periods: []
+  - name: AI Influencer Agents
+    access: other
+    model: free
+    model_how: derived
+    units: []
+    periods: []
+  - name: Creator Marketing Platform
+    access: other
+    model: subscription
+    model_how: derived
+    units: []
+    periods: []
+  - name: Creator Storefronts
+    access: other
+    model: subscription
+    model_how: derived
+    units: []
+    periods: []
+  - name: Creator GEO
+    access: other
+    model: subscription
+    model_how: derived
+    units: []
+    periods: []
