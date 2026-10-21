@@ -1,5 +1,5 @@
 generated: '2026-10-12'
-method: none
+method: searched
 source:
 - https://zapier.com/apps/loudcrowd/integrations
 - https://n8n.io/integrations/loudcrowd/
@@ -10,7 +10,24 @@ checked:
 - https://monid.ai/tools/loudcrowd
 - https://n8n.io/integrations/loudcrowd/
 - https://zapier.com/apps/loudcrowd/integrations
+- yotpo/integrations/yotpo-integration-edges.yml
 summary: null
 marketplace_apps: []
-edges: []
+edges:
+- partner_name: Yotpo (own)
+  partner: yotpo
+  partner_match: mirror
+  mirror_match: domain
+  type: marketplace
+  relationship: platform-app
+  direction: third-party
+  channel: partner-built
+  marketplace: own
+  evidence: https://www.yotpo.com/integrations/loudcrowd/
+  mirror_of: yotpo/integrations/yotpo-integration-edges.yml
+  apps:
+  - LoudCrowd
+  listing_count: 1
+  detected: '2026-10-20'
+  detected_by: mirror-platform-listings.py
 templates: []
