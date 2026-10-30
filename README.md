@@ -64,30 +64,134 @@
 > Full detail: **[Where this data comes from](https://apievangelist.com/about/where-our-data-comes-from)**
 <!-- API-EVANGELIST-PROVENANCE:END -->
 
-LoudCrowd is a creator-commerce platform for consumer brands — influencer, ambassador, affiliate and
-UGC programs, on-domain Creator Storefronts, a ShopWith AI shopping concierge, AI Influencer Agents,
-and Creator GEO.
+LoudCrowd is a creator-commerce platform for consumer brands, combining an influencer/ambassador and affiliate marketing platform, on-domain Creator Storefronts, a ShopWith AI shopping concierge for product detail pages, AI Influencer Agents for discovery, outreach and moderation, and Creator GEO for turning earned creator content into AI-recommendable assets. For developers it publishes a small, purpose-built OpenAPI 3.0 surface across three services: a read-only account-scoped Brand API for pulling program-attributed orders, an HMAC-SHA256-signed Attribution Events API for pushing order create/update/cancel and refund events plus product-catalog batches from custom and headless commerce stacks, and a Creator Storefronts data API used in place of the hosted storefront web components. A browser SDK loaded from pub.loudcrowd.com renders storefront and influencer-list app blocks and performs first-party affiliate attribution on Shopify, Salesforce Commerce Cloud and custom sites.
 
-## Public API surface
+**Areas:** Creator Marketing · Influencer Marketing · Affiliate Marketing · E-Commerce · Creator Commerce · Attribution · Social Commerce · Shopify · User Generated Content · Commissions · Retail · Marketing
 
-| API | Base URL | Auth | Ops |
-|---|---|---|---|
-| Brand API | `https://api.loudcrowd.com` | API token in `X-LC-Account-Key` (scoped) | 1 |
-| Attribution Events API | `https://api.loudcrowd.com` | HMAC-SHA256 `X-Signature` over raw body | 2 |
-| Creator Storefronts API | `https://store-api.loudcrowd.com/api` | HTTP bearer | 5 |
+## LoudCrowd on APIs.io
 
-- OpenAPI 3.0.0, harvested from LoudCrowd's own ReadMe documentation project — `openapi/`
-- Documentation: <https://docs.loudcrowd.com/reference>
-- `llms.txt`: <https://docs.loudcrowd.com/llms.txt> (published by the provider)
+Everything profiled for LoudCrowd is published on APIs.io rather than in this repository. Start at the provider page — **[apis.io/providers/loudcrowd/](https://apis.io/providers/loudcrowd/)** — or go straight to one of the APIs or properties below.
 
-## Notes from the 2026-08-25 profile
+### APIs (8)
 
-- The embeddable web components (`https://pub.loudcrowd.com/embed.js`) are the primary integration
-  surface; the Creator Storefronts API exists as the alternative for teams rendering their own UI.
-- `store-api.loudcrowd.com`, the server declared by the Creator Storefronts API, did not resolve in
-  DNS when probed.
-- No status page, changelog, deprecation policy, sandbox, MCP server, agent card or `security.txt`.
-- Compliance posture (SOC 2 Type II, GDPR/UK GDPR, annual penetration testing) is published inside
-  the DPA rather than in a trust center: <https://loudcrowd.com/legal/dpa/>
+- [LoudCrowd Attribution Events API](https://apis.io/apis/loudcrowd/loudcrowd-attribution-events-api-api/) — The Attribution Events API API from LoudCrowd — 1 operation(s) for attribution events api.
+- [LoudCrowd Brand API](https://apis.io/apis/loudcrowd/loudcrowd-brand-api-api/) — The Brand API API from LoudCrowd — 1 operation(s) for brand api.
+- [LoudCrowd Product Data API](https://apis.io/apis/loudcrowd/loudcrowd-product-data-api/) — The Product Data API from LoudCrowd — 1 operation(s) for product data.
+- [LoudCrowd Storefront Ambassador API](https://apis.io/apis/loudcrowd/loudcrowd-storefrontambassador-api/) — The StorefrontAmbassador API from LoudCrowd — 1 operation(s) for storefrontambassador.
+- [LoudCrowd Storefront Feed Items API](https://apis.io/apis/loudcrowd/loudcrowd-storefrontfeeditems-api/) — The StorefrontFeedItems API from LoudCrowd — 1 operation(s) for storefrontfeeditems.
+- [LoudCrowd Storefront Media Details API](https://apis.io/apis/loudcrowd/loudcrowd-storefrontmediadetails-api/) — The StorefrontMediaDetails API from LoudCrowd — 1 operation(s) for storefrontmediadetails.
+- [LoudCrowd Storefront Product Details API](https://apis.io/apis/loudcrowd/loudcrowd-storefrontproductdetails-api/) — The StorefrontProductDetails API from LoudCrowd — 1 operation(s) for storefrontproductdetails.
+- [LoudCrowd Storefront Collections API](https://apis.io/apis/loudcrowd/loudcrowd-storefront-collections-api/) — The Storefront Collections API from LoudCrowd — 1 operation(s) for storefront collections.
 
-- <https://loudcrowd.com/>
+### Published properties
+
+Each property below is a page on APIs.io carrying the machine-readable artifact and what it says.
+
+#### AsyncAPI (1)
+
+Event-driven and webhook contracts.
+
+- [Loudcrowd Attribution Events](https://apis.io/asyncapis/loudcrowd/loudcrowd-attribution-events/)
+
+#### MCP servers (1)
+
+Model Context Protocol servers that expose the API to agents.
+
+- [loudcrowd-mcp.yml](https://apis.io/servers/loudcrowd/loudcrowd-mcp-yml/)
+
+#### Overlays (2)
+
+OpenAPI overlays, including conversational phrasing for each operation.
+
+- [Loudcrowd Api Overlay](https://apis.io/overlays/loudcrowd/loudcrowd-api-overlay/)
+- [Loudcrowd Creator Storefronts Overlay](https://apis.io/overlays/loudcrowd/loudcrowd-creator-storefronts-overlay/)
+
+#### Security (2)
+
+Authentication, trust centre, and vulnerability disclosure.
+
+- [Loudcrowd Authentication](https://apis.io/security/loudcrowd/loudcrowd-authentication/)
+- [Loudcrowd Domain Security](https://apis.io/security/loudcrowd/loudcrowd-domain-security/)
+
+#### Plans and pricing (1)
+
+Published plans, tiers and prices.
+
+- [Loudcrowd Plans Pricing](https://apis.io/plans/loudcrowd/loudcrowd-plans-pricing/)
+
+#### Rate limits (1)
+
+Published request limits.
+
+- [Loudcrowd Rate Limits](https://apis.io/rate-limits/loudcrowd/loudcrowd-rate-limits/)
+
+## Where to find this API
+
+Links to the company's own pages. This repository publishes no copy of their specifications — the canonical document is theirs and lives at the URLs below.
+
+- [Website](https://loudcrowd.com/)
+- [Documentation](https://docs.loudcrowd.com/docs)
+- [Getting started](https://docs.loudcrowd.com/docs/implementation-overview-custom-ecommerce)
+- [API reference](https://docs.loudcrowd.com/reference)
+- [Pricing](https://loudcrowd.com/pricing/)
+- [Sign up](https://loudcrowd.com/demo/)
+- [Support](https://help.loudcrowd.com/en/)
+- [Blog](https://loudcrowd.com/blog/)
+- [Compliance](https://loudcrowd.com/legal/dpa/)
+- [Terms of service](https://loudcrowd.com/legal/platform-terms/)
+- [Privacy policy](https://loudcrowd.com/legal/privacy/)
+
+## API Evangelist rating
+
+**Kin Score 52.7** — developing · rubric 0.25.0 · scored 2026-10-23
+
+| Facet | Score |
+|---|---|
+| Discoverability | 73.2 |
+| Contract quality | 57.8 |
+| Contract governance | 18.2 |
+| Operational transparency | 0.0 |
+| Developer ergonomics | 47.0 |
+| Access clarity | 84.2 |
+
+**Agent readiness 37.0** — agent-ready
+
+| Agent-readiness dimension | Result |
+|---|---|
+| Spec Presence | yes |
+| Agentic Access | — |
+| Reversibility Documented | — |
+| MCP Server | — |
+| Auth Clarity | bearer (partial credit) |
+| Idempotency | documented (partial credit) |
+| Error Semantics | derived (partial credit) |
+| OpenAPI Examples | verified |
+| Rate Limit Signal | verified |
+| Event Surface Described | yes |
+| Agent Skills | derived (partial credit) |
+| Well Known Catalog | — |
+| Consent Identity | — |
+| Agent Card | — |
+| Dry Run Mode | — |
+| Delegated Identity | — |
+| Protected Resource Metadata | — |
+| Dynamic Client Registration | — |
+| Agentic Commerce | — |
+| Pagination Ratio | paginated |
+| Operation Distinctiveness | na |
+
+**Regulatory alignment 29.4** — Horizontal (data, software, accessibility, platform)
+
+The rubric is published at [github.com/api-evangelist/kin-score](https://github.com/api-evangelist/kin-score). The per-check breakdown behind these numbers — which checks were earned, partial or missed — along with score history and how this provider compares to its peers, is available at [apis.io/providers/loudcrowd/](https://apis.io/providers/loudcrowd/).
+
+## How this profile is made
+
+API Evangelist profiles a company's public API surface the way a developer would find it: the website, developer portal and documentation, the specifications it publishes, its public repositories, and its pricing, status and changelog pages. From that it derives the properties above — contracts split per API, workflows, schemas, collections, governance rules, plans and rate limits — and scores them against the published [Kin Score rubric](https://github.com/api-evangelist/kin-score).
+
+The artifacts are published on [APIs.io](https://apis.io), not in this repository. This repository is the public record for LoudCrowd: the place to say something is wrong, missing or out of date, and to ask for a re-score or a removal.
+
+## Open an issue
+
+- **Something about this listing** — a wrong description, a missing API, a stale artifact or a question about the rating: [open an issue on this repository](https://github.com/api-evangelist/loudcrowd/issues/new).
+- **A new API, or one that is not in the catalog yet** — [submit it on APIs.io](https://apis.io/add/).
+- **Anything else** — [the APIs.io inbox](https://github.com/api-search/inbox/issues/new) or [info@apievangelist.com](mailto:info@apievangelist.com).
